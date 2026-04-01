@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — Arulnidhi Karunanidhi</title>
+    <meta name="description" content="AI infrastructure engineer building agent memory systems. Founder of Quantify Labs Ltd.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-secondary: #555;
+            --ink-muted: #888;
+            --surface: #faf9f7;
+            --surface-warm: #f3f1ed;
+            --accent: #c45d3e;
+            --accent-hover: #a84e33;
+            --accent-light: rgba(196, 93, 62, 0.08);
+            --border: #e5e2dc;
+            --serif: 'Newsreader', Georgia, serif;
+            --sans: 'DM Sans', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --max-w: 720px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--sans);
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        header {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 3rem 1.5rem 2rem;
+        }
+        .site-identity {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .avatar {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+            color: #fff; flex-shrink: 0; letter-spacing: -0.02em;
+        }
+        .site-name {
+            font-family: var(--serif); font-size: 1.65rem; font-weight: 600;
+            color: var(--ink); letter-spacing: -0.02em; line-height: 1.25;
+        }
+        .site-name a { color: inherit; text-decoration: none; }
+        .site-tagline {
+            font-family: var(--serif); font-size: 1.05rem; font-style: italic;
+            color: var(--ink-secondary); margin-bottom: 1.5rem; line-height: 1.5;
+        }
+        nav {
+            display: flex; gap: 1.75rem;
+            padding-bottom: 1.5rem; border-bottom: 1.5px solid var(--border);
+        }
+        nav a {
+            font-family: var(--sans); font-size: 0.88rem; font-weight: 500;
+            color: var(--ink-secondary); text-decoration: none;
+            letter-spacing: 0.02em; transition: color 0.2s;
+        }
+        nav a:hover, nav a.active { color: var(--accent); }
+
+        main {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        h1 {
+            font-family: var(--serif); font-size: 2rem; font-weight: 600;
+            letter-spacing: -0.02em; margin-bottom: 1.5rem; line-height: 1.2;
+        }
+        .about-content p {
+            font-size: 1rem; color: var(--ink-secondary); line-height: 1.85;
+            margin-bottom: 1.25rem; max-width: 640px;
+        }
+        .about-content a {
+            color: var(--accent); text-decoration: underline;
+            text-decoration-color: rgba(196, 93, 62, 0.3);
+            text-underline-offset: 2px; transition: text-decoration-color 0.2s;
+        }
+        .about-content a:hover { text-decoration-color: var(--accent); }
+        .about-content h2 {
+            font-family: var(--serif); font-size: 1.3rem; font-weight: 500;
+            margin: 2rem 0 0.75rem; letter-spacing: -0.01em;
+        }
+        .cert-list {
+            list-style: none; padding: 0;
+        }
+        .cert-list li {
+            font-size: 0.92rem; color: var(--ink-secondary);
+            padding: 0.3rem 0; padding-left: 1.25rem; position: relative;
+        }
+        .cert-list li::before {
+            content: '→'; position: absolute; left: 0; color: var(--accent);
+        }
+
+        .timeline {
+            margin-top: 2rem;
+            border-left: 2px solid var(--border);
+            padding-left: 1.5rem;
+        }
+        .timeline-item { margin-bottom: 1.75rem; }
+        .timeline-year {
+            font-family: var(--mono); font-size: 0.78rem;
+            color: var(--accent); margin-bottom: 0.25rem;
+        }
+        .timeline-event {
+            font-size: 0.95rem; font-weight: 500; color: var(--ink);
+            margin-bottom: 0.2rem;
+        }
+        .timeline-detail {
+            font-size: 0.88rem; color: var(--ink-secondary); line-height: 1.6;
+        }
+
+        footer {
+            max-width: var(--max-w); margin: 0 auto; padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono); font-size: 0.72rem;
+            color: var(--ink-muted); text-align: center;
+        }
+        @media (max-width: 640px) {
+            header { padding: 2rem 1.25rem 1.5rem; }
+            main { padding: 1.5rem 1.25rem 3rem; }
+            .site-name { font-size: 1.35rem; }
+            h1 { font-size: 1.6rem; }
+            nav { gap: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="site-identity">
+        <div class="avatar">AK</div>
+        <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
+    </div>
+    <p class="site-tagline">Building agent memory &amp; infrastructure — one system at a time.</p>
+    <nav>
+        <a href="/">Blog</a>
+        <a href="/about" class="active">About</a>
+        <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+</header>
+
+<main>
+    <h1>About</h1>
+
+    <div class="about-content">
+        <p>I'm an AI infrastructure engineer focused on the problem of agent memory — how AI agents remember, share, and curate knowledge across sessions and across teams of agents.</p>
+
+        <p>I'm the founder of <a href="https://find-and-update.company-information.service.gov.uk/company/16027803">Quantify Labs Ltd.</a> (UK) and the creator of <a href="https://github.com/quantifylabs/aegis-memory">Aegis Memory</a>, an open-source persistent memory system for multi-agent AI. I also built <strong>mcp-parapet</strong>, security middleware for the Model Context Protocol targeting EU AI Act compliance.</p>
+
+        <p>Before AI infrastructure, I spent 10+ years in data engineering and business intelligence, working with SQL, Python, Azure, Databricks, and enterprise data pipelines. That background shaped how I think about agent systems — reliability, observability, and failing gracefully matter more than demos that work once.</p>
+
+        <p>I hold an MSc in Big Data Analytics from Sheffield Hallam University and I'm building toward a funded PhD (2027–28 target) researching multi-agent memory systems and collective knowledge discovery — specifically, whether quality-curated memory can make multi-agent simulation reliable enough to trust.</p>
+
+        <h2>What I'm working on now</h2>
+
+        <p>Learning AI agent infrastructure systematically through an 80-lesson curriculum covering LangChain, LangGraph, CrewAI, production deployment, and observability. Each lesson becomes a blog post here — not a learning diary, but a reference that explains what I built, what I learned, and what the documentation doesn't tell you.</p>
+
+        <p>In parallel: running a Polymarket trading bot (paper trading phase), preparing mcp-parapet for open-source launch, and writing a three-paper research arc for PhD applications.</p>
+
+        <h2>Certifications</h2>
+
+        <ul class="cert-list">
+            <li>Microsoft Certified: Azure Data Engineer Associate</li>
+            <li>Databricks Generative AI & Data Engineering</li>
+            <li>Oracle Cloud Data Management</li>
+            <li>DBT Fundamentals</li>
+        </ul>
+
+        <h2>Timeline</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-event">mcp-parapet v0.1.0 code-complete</div>
+                <div class="timeline-detail">2,778 lines of Python, 63 tests. Security middleware for MCP with content scanning, trust boundaries, HMAC integrity, and audit trails.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-event">Polymarket trading bot live (paper trading)</div>
+                <div class="timeline-detail">Hybrid strategy bot running on Oracle Cloud AMD VM. Weather and arbitrage strategies with positive early equity.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2025–26</div>
+                <div class="timeline-event">Aegis Memory v1.3.0</div>
+                <div class="timeline-detail">Persistent memory for multi-agent systems. Scope-aware access, semantic search with pgvector, ACE patterns, CrewAI and LangGraph integrations.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-event">Founded Quantify Labs Ltd.</div>
+                <div class="timeline-detail">UK-registered company building AI agent infrastructure and developer tools.</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-event">MSc Big Data Analytics</div>
+                <div class="timeline-detail">Sheffield Hallam University.</div>
+            </div>
+        </div>
+
+        <h2>Get in touch</h2>
+        <p>Best way to reach me is <a href="https://linkedin.com/in/arulnidhikarunanidhi">LinkedIn</a>. I also post on <a href="https://dev.to/arulnidhi">DEV.to</a>.</p>
+    </div>
+</main>
+
+<footer>
+    &copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages
+</footer>
+
+</body>
+</html>
