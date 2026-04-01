@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scope-Aware Memory Access Control for Multi-Agent Systems — Arulnidhi Karunanidhi</title>
+    <meta name="description" content="How to build a 3-tier memory scope system for multi-agent AI. Architecture, trade-offs, and what broke along the way.">
+    <meta name="author" content="Arulnidhi Karunanidhi">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Scope-Aware Memory Access Control for Multi-Agent Systems">
+    <meta property="og:description" content="How to build a 3-tier memory scope system for multi-agent AI. Architecture, trade-offs, and what broke along the way.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://arulnidhii.github.io/posts/scope-aware-memory-access-control">
+    <meta property="article:author" content="Arulnidhi Karunanidhi">
+
+    <!-- LLMs.txt -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
+
+    <!-- JSON-LD Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Scope-Aware Memory Access Control for Multi-Agent Systems",
+        "description": "How to build a 3-tier memory scope system for multi-agent AI. Architecture, trade-offs, and what broke along the way.",
+        "author": {
+            "@type": "Person",
+            "name": "Arulnidhi Karunanidhi",
+            "url": "https://arulnidhii.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Arulnidhi Karunanidhi"
+        },
+        "datePublished": "2026-04-01",
+        "url": "https://arulnidhii.github.io/posts/scope-aware-memory-access-control",
+        "keywords": ["agent memory", "multi-agent systems", "access control", "pgvector", "context engineering", "Aegis Memory"]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-secondary: #555;
+            --ink-muted: #888;
+            --surface: #faf9f7;
+            --surface-warm: #f3f1ed;
+            --accent: #c45d3e;
+            --accent-light: rgba(196, 93, 62, 0.08);
+            --border: #e5e2dc;
+            --code-bg: #2b2b2b;
+            --code-text: #e6e6e6;
+            --serif: 'Newsreader', Georgia, serif;
+            --sans: 'DM Sans', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --max-w: 720px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--sans);
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header — same as index */
+        header {
+            max-width: var(--max-w); margin: 0 auto; padding: 3rem 1.5rem 2rem;
+        }
+        .site-identity { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem; }
+        .avatar {
+            width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+            color: #fff; flex-shrink: 0;
+        }
+        .site-name { font-family: var(--serif); font-size: 1.65rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; }
+        .site-name a { color: inherit; text-decoration: none; }
+        .site-tagline { font-family: var(--serif); font-size: 1.05rem; font-style: italic; color: var(--ink-secondary); margin-bottom: 1.5rem; }
+        nav { display: flex; gap: 1.75rem; padding-bottom: 1.5rem; border-bottom: 1.5px solid var(--border); }
+        nav a { font-family: var(--sans); font-size: 0.88rem; font-weight: 500; color: var(--ink-secondary); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+        nav a:hover { color: var(--accent); }
+
+        /* Article */
+        article {
+            max-width: var(--max-w); margin: 0 auto; padding: 0 1.5rem 4rem;
+        }
+        .post-header { padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        .post-meta-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .post-date { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-muted); }
+        .post-tag {
+            font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+            color: var(--accent); background: var(--accent-light);
+            padding: 0.15rem 0.55rem; border-radius: 3px;
+        }
+        .post-reading-time { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-muted); }
+        article h1 {
+            font-family: var(--serif); font-size: 2rem; font-weight: 600;
+            letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 0.75rem;
+        }
+        .post-subtitle {
+            font-size: 1.05rem; color: var(--ink-secondary); line-height: 1.6;
+        }
+
+        /* Prose */
+        .prose h2 {
+            font-family: var(--serif); font-size: 1.4rem; font-weight: 500;
+            margin: 2.5rem 0 1rem; letter-spacing: -0.01em;
+        }
+        .prose h3 {
+            font-family: var(--sans); font-size: 1.05rem; font-weight: 600;
+            margin: 2rem 0 0.75rem;
+        }
+        .prose p {
+            font-size: 1rem; line-height: 1.85; color: var(--ink);
+            margin-bottom: 1.25rem;
+        }
+        .prose a {
+            color: var(--accent); text-decoration: underline;
+            text-decoration-color: rgba(196, 93, 62, 0.3);
+            text-underline-offset: 2px;
+        }
+        .prose a:hover { text-decoration-color: var(--accent); }
+        .prose strong { font-weight: 600; }
+        .prose em { font-family: var(--serif); font-style: italic; }
+
+        /* Code blocks */
+        .prose pre {
+            background: var(--code-bg); color: var(--code-text);
+            padding: 1.25rem 1.5rem; border-radius: 6px;
+            overflow-x: auto; margin: 1.5rem 0;
+            font-family: var(--mono); font-size: 0.82rem; line-height: 1.7;
+        }
+        .prose code {
+            font-family: var(--mono); font-size: 0.85em;
+            background: var(--surface-warm); padding: 0.15em 0.4em;
+            border-radius: 3px; color: var(--ink);
+        }
+        .prose pre code {
+            background: none; padding: 0; color: var(--code-text);
+        }
+
+        /* Images */
+        .prose img {
+            max-width: 100%; height: auto; border-radius: 6px;
+            margin: 1.5rem 0; display: block;
+        }
+        .prose .img-caption, .img-caption {
+            font-family: var(--mono); font-size: 0.75rem; color: var(--ink-muted);
+            text-align: center; margin-top: -1rem; margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* Callout / diagram placeholder */
+        .diagram-placeholder {
+            background: var(--surface-warm); border: 1px dashed var(--border);
+            border-radius: 8px; padding: 2.5rem 2rem; text-align: center;
+            margin: 2rem 0; color: var(--ink-muted);
+            font-family: var(--mono); font-size: 0.82rem;
+        }
+
+        .callout {
+            background: var(--accent-light); border-left: 3px solid var(--accent);
+            padding: 1rem 1.25rem; border-radius: 0 6px 6px 0;
+            margin: 1.5rem 0;
+        }
+        .callout p { margin-bottom: 0; font-size: 0.92rem; color: var(--ink-secondary); }
+
+        /* Back link */
+        .back-link {
+            display: inline-block; margin-top: 2rem; padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono); font-size: 0.82rem;
+            color: var(--accent); text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        footer {
+            max-width: var(--max-w); margin: 0 auto; padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono); font-size: 0.72rem;
+            color: var(--ink-muted); text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            header { padding: 2rem 1.25rem 1.5rem; }
+            article { padding: 0 1.25rem 3rem; }
+            article h1 { font-size: 1.6rem; }
+            .site-name { font-size: 1.35rem; }
+            nav { gap: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="site-identity">
+        <div class="avatar">AK</div>
+        <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
+    </div>
+    <p class="site-tagline">Building agent memory &amp; infrastructure — one system at a time.</p>
+    <nav>
+        <a href="/">Blog</a>
+        <a href="/about">About</a>
+        <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+</header>
+
+<article>
+    <div class="post-header">
+        <div class="post-meta-top">
+            <span class="post-date">April 2026</span>
+            <span class="post-tag">agent memory</span>
+            <span class="post-reading-time">12 min read</span>
+        </div>
+        <h1>Scope-Aware Memory Access Control for Multi-Agent Systems</h1>
+        <p class="post-subtitle">How do you let Agent A read shared knowledge without leaking Agent B's private context? I built a 3-tier memory scope system inside Aegis Memory. Here's the architecture, the trade-offs, and what broke along the way.</p>
+    </div>
+
+    <div class="prose">
+
+        <h2>The problem</h2>
+
+        <p>When you have one agent, memory is simple: everything the agent knows is in one bucket. But the moment you have two agents working together, you need to answer a question that most tutorials skip: <strong>who can see what?</strong></p>
+
+        <p>Imagine a research crew: a LiteratureReviewer and a MethodAnalyst working on the same paper. The reviewer discovers a useful finding and stores it in memory. Should the analyst be able to see it? Probably yes — that's shared context. But the reviewer also has notes about its internal reasoning process and dead-end searches. Should the analyst see those too? Probably not — that's noise.</p>
+
+        <p>This is the scope problem, and it gets harder with more agents, longer-running tasks, and production reliability requirements.</p>
+
+        <img src="/images/scope-aware-3-tier-architecture.svg" alt="3-tier memory scope architecture: global scope at top accessible to all agents, shared scope in the middle accessible within a crew, and private scopes at bottom isolated per agent">
+        <p class="img-caption">The three tiers: global (system-wide), shared (crew-wide), private (agent-only). Solid arrows show direct access; dashed arrows show read-only paths.</p>
+
+        <h2>The three-tier model</h2>
+
+        <p>In Aegis Memory, I implemented three tiers of memory scope:</p>
+
+        <p><strong>Private scope</strong> — memories that belong to a single agent. Internal reasoning steps, failed attempts, scratch calculations. Only the owning agent can read or write.</p>
+
+        <p><strong>Shared scope</strong> — memories visible to all agents in a crew or team. Findings, decisions, agreed-upon context. Any agent in the group can read; writing is controlled by the agent that created the memory.</p>
+
+        <p><strong>Global scope</strong> — memories visible across all teams and sessions. Organisational knowledge, persistent facts, system-wide configuration. Typically written by supervisor agents or system processes.</p>
+
+        <div class="callout">
+            <p><strong>Key insight:</strong> The hard part isn't implementing the three tiers — it's deciding which tier a memory belongs to at write time. If you get the defaults wrong, agents either over-share (noisy context) or under-share (repeated work).</p>
+        </div>
+
+        <h2>Implementation</h2>
+
+        <p>Each memory entry in Aegis has a <code>scope</code> field and an <code>owner_agent_id</code>. The access control check runs at query time:</p>
+
+<pre><code>def can_access(agent_id: str, memory: Memory) -> bool:
+    if memory.scope == MemoryScope.GLOBAL:
+        return True
+    if memory.scope == MemoryScope.SHARED:
+        return same_crew(agent_id, memory.owner_agent_id)
+    if memory.scope == MemoryScope.PRIVATE:
+        return agent_id == memory.owner_agent_id
+    return False</code></pre>
+
+        <p>Simple enough. But the real complexity is in the query path — when an agent asks for relevant memories, the system needs to search across all accessible scopes efficiently without scanning private memories of other agents.</p>
+
+        <p>In pgvector, this means the scope filter has to be part of the vector similarity query, not a post-filter. Post-filtering means you might retrieve 10 results from agent B's private memory, throw them all away, and return nothing — even though there were 10 great shared memories that ranked 11th through 20th.</p>
+
+<pre><code>SELECT content, embedding <=> query_embedding AS distance
+FROM memories
+WHERE (
+    scope = 'global'
+    OR (scope = 'shared' AND crew_id = %(crew_id)s)
+    OR (scope = 'private' AND agent_id = %(agent_id)s)
+)
+ORDER BY embedding <=> query_embedding
+LIMIT %(k)s;</code></pre>
+
+        <h2>What broke</h2>
+
+        <p>The first thing that broke was <strong>performance</strong>. The compound WHERE clause with OR conditions prevented PostgreSQL from using the HNSW index efficiently. At 10K memories the query was fine. At 100K it was noticeably slower. The fix was a partial index per scope tier — three smaller indexes instead of one large one with a complex filter.</p>
+
+        <p>The second thing that broke was <strong>defaults</strong>. I initially defaulted all memories to private scope. This was "safe" but meant agents in a crew couldn't see each other's work unless the developer explicitly set scope at every write. In practice, nobody did, and multi-agent crews performed worse than single agents because they were doing redundant work.</p>
+
+        <p>The fix: default to shared scope within a crew, private scope for internal reasoning traces. This required distinguishing between "observation" memories (findings, facts — shared by default) and "trace" memories (reasoning steps, tool call logs — private by default).</p>
+
+        <img src="/images/scope-filtered-query-flow.svg" alt="Query flow diagram showing how scope filters are applied at the HNSW index scan level using three partial indexes, one per scope tier, before merging and ranking results">
+        <p class="img-caption">The query path: scope filter builds a WHERE clause, three partial HNSW indexes are scanned in parallel, results are merged and ranked by vector distance. Agent B's private memories are never touched.</p>
+
+        <h2>What I'd change</h2>
+
+        <p>If I were rebuilding this from scratch, I'd add a fourth tier: <strong>team scope</strong>, sitting between shared and global. In a hierarchical multi-agent system (think: Engineering department and Research department under a VP agent), some memories should be visible within a department but not across departments. The current three-tier model doesn't handle this cleanly — you either make it shared (visible to everyone in the org) or private (visible only to the creating agent).</p>
+
+        <p>I'd also invest earlier in a <strong>memory effectiveness tracker</strong>. Right now, scope decisions are made at write time and never revisited. But some private memories turn out to be useful to other agents, and some shared memories are just noise. A voting or feedback mechanism — where agents can flag memories as helpful or unhelpful — would let the system auto-promote useful private memories to shared, and demote noisy shared memories.</p>
+
+        <h2>The takeaway</h2>
+
+        <p>Scope-aware memory access control is not optional for production multi-agent systems. Without it, agents either drown in irrelevant context or can't access the information they need. The three-tier model (private / shared / global) is a good starting point, but the real engineering is in the defaults, the query performance, and the feedback loops that let the system improve over time.</p>
+
+        <p>If you're building multi-agent memory, start here. And if you want to use this directly, <a href="https://github.com/quantifylabs/aegis-memory">Aegis Memory</a> is open source.</p>
+
+    </div>
+
+    <a href="/" class="back-link">← Back to all posts</a>
+</article>
+
+<footer>
+    &copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages
+</footer>
+
+</body>
+</html>
