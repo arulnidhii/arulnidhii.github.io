@@ -1,0 +1,59 @@
+# Arulnidhi Karunanidhi
+
+> AI infrastructure engineer building agent memory systems and security middleware. Founder of Quantify Labs Ltd. (UK).
+
+## About
+
+Arulnidhi Karunanidhi is an AI infrastructure engineer focused on agent memory — how AI agents remember, share, and curate knowledge across sessions and across multi-agent teams. He is the founder of Quantify Labs Ltd., a UK-registered company building AI agent infrastructure and developer tools.
+
+He holds an MSc in Big Data Analytics from Sheffield Hallam University and has 10+ years of experience in data engineering and business intelligence. He is building toward a funded PhD (2027–2028 target) researching multi-agent memory systems and collective knowledge discovery.
+
+Based in Chennai, India. Originally from Tamil Nadu.
+
+## Projects
+
+- [Aegis Memory](https://github.com/quantifylabs/aegis-memory): Open-source persistent memory for multi-agent AI systems. Features scope-aware access control (private/shared/global), semantic search with PostgreSQL + pgvector, ACE (Autonomous Cognitive Entity) patterns, and integrations with CrewAI, LangChain, and LangGraph. Python package: `pip install aegis-memory`.
+
+- mcp-parapet: Security middleware for the Model Context Protocol (MCP). Content scanning, HMAC manifest integrity verification, trust boundaries, rate limiting, and audit trails. 2,778 lines of Python, 63 tests. Targets EU AI Act compliance (August 2026 deadline). Open-source launch pending.
+
+- Polymarket Trading Bot: Hybrid prediction market trading bot with weather and arbitrage strategies. Running on Oracle Cloud AMD VM at paper trading stage.
+
+- [RagBot](https://github.com/arulnidhii/RagBot): Scalable RAG bot with Google Drive, OneDrive, and Slack connectors.
+
+## Research Interests
+
+- Multi-agent memory systems and collective knowledge discovery
+- Quality-curated memory for multi-agent simulation reliability
+- Validation gaps in generative agent simulations (OASIS, TRIBE v2)
+- Context engineering and token budget optimisation for production agents
+- EU AI Act compliance for AI agent infrastructure
+
+## Technical Expertise
+
+- AI Agent Frameworks: LangChain, LangGraph, CrewAI
+- Memory & Search: PostgreSQL, pgvector, FAISS, vector similarity search, HNSW indexing
+- Languages: Python (primary), SQL
+- Cloud & Infrastructure: Oracle Cloud, Docker, CI/CD, FastAPI
+- Data Engineering: Azure, Databricks, dbt, Spark
+- Security: MCP security, HMAC integrity, content scanning, audit trails
+
+## Certifications
+
+- Microsoft Certified: Azure Data Engineer Associate
+- Databricks Generative AI & Data Engineering
+- Oracle Cloud Data Management
+- dbt Fundamentals
+
+## Writing
+
+This blog covers AI agent memory architectures, context engineering, multi-agent orchestration, production deployment patterns, and observability for agent systems. Posts are written from the perspective of building these systems firsthand.
+
+## Links
+
+- Website: https://arulnidhii.github.io
+- GitHub: https://github.com/arulnidhii
+- GitHub (org): https://github.com/quantifylabs
+- LinkedIn: https://linkedin.com/in/arulnidhikarunanidhi
+- DEV.to: https://dev.to/arulnidhi
+- Aegis Memory: https://github.com/quantifylabs/aegis-memory
+- Company: https://find-and-update.company-information.service.gov.uk/company/16027803
