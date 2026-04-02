@@ -6,6 +6,7 @@
     <title>Arulnidhi Karunanidhi — Agent Memory & Infrastructure</title>
     <meta name="description" content="Writing about AI agent memory, multi-agent orchestration, and context engineering. Building the infrastructure that helps agents remember.">
     <meta name="author" content="Arulnidhi Karunanidhi">
+    <meta name="google-site-verification" content="VwHNc21rhhDryfXUoXQ6QKZL6vi_PY2WLLNwpDpGDho" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="Arulnidhi Karunanidhi — Agent Memory & Infrastructure">
@@ -70,6 +71,497 @@
     
     <style>
         :root {
+            --ink: #1a1a1a;
+            --ink-secondary: #555;
+            --ink-muted: #888;
+            --surface: #faf9f7;
+            --surface-warm: #f3f1ed;
+            --accent: #c45d3e;
+            --accent-hover: #a84e33;
+            --accent-light: rgba(196, 93, 62, 0.08);
+            --border: #e5e2dc;
+            --code-bg: #2d2d2d;
+            --code-text: #e6e6e6;
+            --serif: 'Newsreader', Georgia, serif;
+            --sans: 'DM Sans', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --max-w: 720px;
+            --gap: 2rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--surface);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ---- HEADER ---- */
+        header {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 3rem 1.5rem 2rem;
+        }
+
+        .site-identity {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            flex-shrink: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .site-name {
+            font-family: var(--serif);
+            font-size: 1.65rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+        }
+
+        .site-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site-tagline {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--ink-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.75rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        nav a {
+            font-family: var(--sans);
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--ink-secondary);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+
+        /* ---- MAIN ---- */
+        main {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        /* ---- INTRO SECTION ---- */
+        .intro {
+            padding: 2.5rem 0 2rem;
+        }
+
+        .intro p {
+            font-size: 1rem;
+            color: var(--ink-secondary);
+            line-height: 1.8;
+            max-width: 620px;
+        }
+
+        .intro p + p {
+            margin-top: 0.75rem;
+        }
+
+        .intro a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: rgba(196, 93, 62, 0.3);
+            text-underline-offset: 2px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        .intro a:hover {
+            text-decoration-color: var(--accent);
+        }
+
+        /* ---- SECTION HEADINGS ---- */
+        .section-label {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        /* ---- POST LIST ---- */
+        .post-list {
+            list-style: none;
+        }
+
+        .post-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .post-item:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .post-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        .post-link:hover .post-title {
+            color: var(--accent);
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .post-date {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+        }
+
+        .post-tag {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.15rem 0.55rem;
+            border-radius: 3px;
+            letter-spacing: 0.02em;
+        }
+
+        .post-title {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.35;
+            margin-bottom: 0.35rem;
+            transition: color 0.2s;
+            letter-spacing: -0.01em;
+        }
+
+        .post-excerpt {
+            font-size: 0.92rem;
+            color: var(--ink-secondary);
+            line-height: 1.65;
+        }
+
+        .post-item.featured {
+            background: var(--accent-light);
+            margin: 0 -1.5rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: none;
+        }
+
+        .post-item.featured + .post-item {
+            border-top: none;
+        }
+
+        /* ---- PROJECTS ---- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .project-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-decoration: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px rgba(196, 93, 62, 0.08);
+        }
+
+        .project-name {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--ink);
+            margin-bottom: 0.35rem;
+        }
+
+        .project-desc {
+            font-size: 0.82rem;
+            color: var(--ink-secondary);
+            line-height: 1.55;
+        }
+
+        .project-tech {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--ink-muted);
+            margin-top: 0.65rem;
+        }
+
+        /* ---- ABOUT STRIP ---- */
+        .about-strip {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--surface-warm);
+            border-radius: 8px;
+        }
+
+        .about-strip h3 {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .about-strip p {
+            font-size: 0.9rem;
+            color: var(--ink-secondary);
+            line-height: 1.7;
+        }
+
+        .about-strip p + p {
+            margin-top: 0.6rem;
+        }
+
+        .connect-links {
+            display: flex;
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .connect-links a {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(196, 93, 62, 0.3);
+            padding-bottom: 1px;
+            transition: border-color 0.2s;
+        }
+
+        .connect-links a:hover {
+            border-color: var(--accent);
+        }
+
+        /* ---- FOOTER ---- */
+        footer {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            text-align: center;
+        }
+
+        /* ---- COMING SOON BADGE ---- */
+        .coming-soon {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--ink-muted);
+            border: 1px dashed var(--border);
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 640px) {
+            header { padding: 2rem 1.25rem 1.5rem; }
+            main { padding: 0 1.25rem 3rem; }
+            .site-name { font-size: 1.35rem; }
+            .post-title { font-size: 1.15rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .post-item.featured { margin: 0 -1.25rem; padding: 1.25rem; }
+            nav { gap: 1.25rem; }
+            .connect-links { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="site-identity">
+        <div class="avatar">AK</div>
+        <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
+    </div>
+    <p class="site-tagline">Building agent memory &amp; infrastructure — one system at a time.</p>
+    <nav>
+        <a href="/" class="active">Blog</a>
+        <a href="/about">About</a>
+        <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="intro">
+        <p>I build memory and security infrastructure for AI agents. Creator of <a href="https://github.com/quantifylabs/aegis-memory">Aegis Memory</a> (persistent memory for multi-agent systems) and <a href="#">mcp-parapet</a> (MCP security middleware). Founder of <a href="https://find-and-update.company-information.service.gov.uk/company/16027803">Quantify Labs Ltd.</a></p>
+        <p>This site is where I write about what I learn building these systems — agent memory architectures, context engineering, multi-agent orchestration, and the messy production details that tutorials skip.</p>
+    </section>
+
+    <div class="section-label">Writing</div>
+
+    <ul class="post-list">
+
+        <li class="post-item featured">
+            <a href="/posts/scope-aware-memory-access-control" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">April 1, 2026</span>
+                    <span class="post-tag">agent memory</span>
+                </div>
+                <h2 class="post-title">Scope-Aware Memory Access Control for Multi-Agent Systems</h2>
+                <p class="post-excerpt">How do you let Agent A read shared knowledge without leaking Agent B's private context? I built a 3-tier memory scope system inside Aegis Memory. Here's the architecture, the trade-offs, and what broke along the way.</p>
+            </a>
+        </li>
+
+        <li class="post-item">
+            <a href="/posts/agent-memory-types-benchmarked" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">Coming Soon</span>
+                    <span class="post-tag">benchmarks</span>
+                </div>
+                <h2 class="post-title">I Tested 6 Agent Memory Types on the Same Conversation — Here's What Survived</h2>
+                <p class="post-excerpt">Buffer, summary, vector, graph, entity, and token-windowed memory. Same 20-turn conversation, measured on token cost, retrieval accuracy, and context quality. The results weren't what I expected.</p>
+            </a>
+        </li>
+
+        <li class="post-item">
+            <a href="/posts/langgraph-crewai-hybrid" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">Coming Soon</span>
+                    <span class="post-tag">orchestration</span>
+                </div>
+                <h2 class="post-title">The CrewAI + LangGraph Hybrid Pattern Nobody Talks About</h2>
+                <p class="post-excerpt">CrewAI handles team orchestration. LangGraph gives you explicit state control per agent. Using both together is the pattern I wish I'd known earlier. With code and architecture diagrams.</p>
+            </a>
+        </li>
+
+        <li class="post-item">
+            <a href="/posts/context-window-management-production" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">Coming Soon</span>
+                    <span class="post-tag">context engineering</span>
+                </div>
+                <h2 class="post-title">Context Window Management in Production: Token Budgets, Selective Retrieval, and What Actually Matters</h2>
+                <p class="post-excerpt">Your agent has 4K tokens of context budget and 50K tokens of potentially relevant memory. How do you pick the right subset? Recency-only vs relevance-only vs hybrid scoring — tested on real workloads.</p>
+            </a>
+        </li>
+
+        <li class="post-item">
+            <a href="/posts/oasis-simulation-validation-gap" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">Coming Soon</span>
+                    <span class="post-tag">research</span>
+                </div>
+                <h2 class="post-title">The Validation Gap in Multi-Agent Simulation: Lessons from OASIS and TRIBE</h2>
+                <p class="post-excerpt">Multi-agent simulations look impressive but how do you know the emergent behaviours are meaningful and not just hallucinated consensus? A critique that became my PhD research direction.</p>
+            </a>
+        </li>
+
+        <li class="post-item">
+            <a href="/posts/mcp-security-middleware" class="post-link">
+                <div class="post-meta">
+                    <span class="post-date">Coming Soon</span>
+                    <span class="post-tag">security</span>
+                </div>
+                <h2 class="post-title">Building MCP Security Middleware: Content Scanning, Trust Boundaries, and the EU AI Act</h2>
+                <p class="post-excerpt">MCP gives agents access to external tools. mcp-parapet sits in between to scan content, enforce trust boundaries, verify manifest integrity, and create audit trails. 2,778 lines of Python, 63 tests, and a compliance story.</p>
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="section-label">Projects</div>
+
+    <div class="projects-grid">
+        <a href="https://github.com/quantifylabs/aegis-memory" target="_blank" rel="noopener" class="project-card">
+            <div class="project-name">Aegis Memory</div>
+            <div class="project-desc">Persistent memory for multi-agent AI systems. Scope-aware access control, semantic search with pgvector, ACE patterns, and framework integrations.</div>
+            <div class="project-tech">Python · PostgreSQL · pgvector</div>
+        </a>
+        <a href="#" class="project-card">
+            <div class="project-name">mcp-parapet <span class="coming-soon">soon</span></div>
+            <div class="project-desc">Security middleware for the Model Context Protocol. Content scanning, HMAC manifest integrity, rate limiting, and audit trails.</div>
+            <div class="project-tech">Python · MCP · Security</div>
+        </a>
+        <a href="#" class="project-card">
+            <div class="project-name">Polymarket Trading Bot</div>
+            <div class="project-desc">Hybrid prediction market bot with weather and arbitrage strategies. Live paper trading on Oracle Cloud.</div>
+            <div class="project-tech">Python · CLOB API · Oracle VM</div>
+        </a>
+        <a href="https://github.com/arulnidhii/RagBot" target="_blank" rel="noopener" class="project-card">
+            <div class="project-name">RagBot</div>
+            <div class="project-desc">Scalable RAG bot with Google Drive, OneDrive, and Slack connectors.</div>
+            <div class="project-tech">Python · LangChain · Vector DB</div>
+        </a>
+    </div>
+
+    <div class="about-strip">
+        <h3>About me</h3>
+        <p>I'm an AI infrastructure engineer and founder of Quantify Labs Ltd. (UK). MSc in Big Data Analytics from Sheffield Hallam University. Currently building toward an AI Agent Engineer role and a funded PhD researching multi-agent memory systems and collective knowledge discovery.</p>
+        <p>Previously: 10+ years in data engineering and BI. Azure &amp; Databricks certified. 1,700+ LinkedIn followers writing about agent memory and AI infrastructure.</p>
+        <div class="connect-links">
+            <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/quantifylabs" target="_blank" rel="noopener">Quantify Labs</a>
+            <a href="https://dev.to/arulnidhi" target="_blank" rel="noopener">DEV.to</a>
+        </div>
+    </div>
+
+</main>
+
+<footer>
+    &copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages
+</footer>
+
+</body>
+</html>        :root {
             --ink: #1a1a1a;
             --ink-secondary: #555;
             --ink-muted: #888;
