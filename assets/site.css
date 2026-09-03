@@ -17,6 +17,7 @@
     --mono: "JetBrains Mono", Consolas, monospace;
     --max-w: 720px;
     --radius: 6px;
+    --shadow-subtle: 0 8px 24px rgba(45, 37, 31, .06);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -87,7 +88,8 @@ h1 { margin-bottom: 1.5rem; font-family: var(--serif); font-size: 2rem; font-wei
 .post-tag { padding: .15rem .55rem; border: 1px solid #e4bdae; border-radius: 999px; background: var(--accent-light); color: var(--accent-hover); font-family: var(--mono); font-size: .66rem; font-weight: 500; letter-spacing: .02em; }
 .post-title { margin-bottom: .35rem; color: var(--ink); font-family: var(--serif); font-size: 1.3rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.35; transition: color .2s; }
 .post-excerpt { color: var(--ink-secondary); font-size: .92rem; line-height: 1.65; }
-.post-item.featured { margin-inline: -1.5rem; padding: 1.5rem; border: 1px solid #e3c9bf; border-radius: var(--radius); background: var(--accent-light); }
+.post-item.featured { position: relative; margin-inline: -1.5rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); box-shadow: var(--shadow-subtle); }
+.post-item.featured::before { position: absolute; inset: 0 auto 0 0; width: 3px; border-radius: var(--radius) 0 0 var(--radius); background: var(--accent); content: ""; }
 .post-item.featured + .post-item { border-top: 0; }
 .research-queue { margin-top: 2rem; padding: 1.25rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
 .research-queue .section-label { margin-bottom: .75rem; padding-top: 0; }
@@ -138,13 +140,16 @@ h1 { margin-bottom: 1.5rem; font-family: var(--serif); font-size: 2rem; font-wei
 .callout p { margin: 0; color: var(--ink-secondary); font-size: .94rem; line-height: 1.7; }
 
 /* Experiment results */
-.table-wrap { margin: 1.75rem 0; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); }
+.table-wrap { margin: 1.75rem 0; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); box-shadow: var(--shadow-subtle); scrollbar-color: var(--border-strong) var(--surface-warm); }
+.table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 table { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
-caption { padding: .8rem 1rem; border-bottom: 1px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 1.05rem; font-weight: 500; text-align: left; }
+caption { padding: .9rem 1rem .8rem; border-bottom: 1px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 1.05rem; font-weight: 600; text-align: left; }
+caption::before { display: block; margin-bottom: .2rem; color: var(--accent); content: "Evidence"; font-family: var(--mono); font-size: .64rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
 th, td { padding: .75rem .8rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
 th { background: var(--surface-warm); color: var(--ink-secondary); font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .02em; }
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #faf6f2; }
+tbody tr:focus-within { background: var(--accent-light); }
 td:last-child { color: var(--ink); font-weight: 500; }
 .back-link { display: block; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); text-decoration: none; }
 .back-link:hover { color: var(--accent-hover); text-decoration: underline; }
@@ -173,4 +178,9 @@ footer { padding: 2rem 1.5rem; border-top: 1px solid var(--border); color: var(-
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+@media (forced-colors: active) {
+    .avatar, .post-item.featured::before { forced-color-adjust: auto; }
+    .post-tag, .callout, .post-item.featured, .project-card, .research-queue, .table-wrap { border-color: CanvasText; }
 }
