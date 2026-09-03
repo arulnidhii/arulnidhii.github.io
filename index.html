@@ -294,6 +294,47 @@
             border-top: none;
         }
 
+        /* ---- RESEARCH QUEUE ---- */
+        .research-queue {
+            margin-top: 2rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--surface-warm);
+            border-radius: 6px;
+        }
+
+        .research-queue .section-label {
+            margin-bottom: 0.75rem;
+            padding-top: 0;
+        }
+
+        .queue-list {
+            list-style: none;
+        }
+
+        .queue-item {
+            padding: 0.65rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .queue-item:first-child {
+            border-top: none;
+        }
+
+        .queue-topic {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+
+        .queue-condition {
+            margin-top: 0.15rem;
+            color: var(--ink-muted);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            line-height: 1.5;
+        }
+
         /* ---- PROJECTS ---- */
         .projects-grid {
             display: grid;
@@ -475,62 +516,33 @@
             </a>
         </li>
 
-        <li class="post-item">
-            <a href="/posts/agent-memory-types-benchmarked" class="post-link">
-                <div class="post-meta">
-                    <span class="post-date">Coming Soon</span>
-                    <span class="post-tag">benchmarks</span>
-                </div>
-                <h2 class="post-title">Benchmarking Agent Memory Without Grading the Benchmark</h2>
-                <p class="post-excerpt">A controlled comparison of six memory types, with explicit task definitions, metrics, baselines, and checks against evaluator-induced conclusions.</p>
-            </a>
-        </li>
-
-        <li class="post-item">
-            <a href="/posts/langgraph-crewai-hybrid" class="post-link">
-                <div class="post-meta">
-                    <span class="post-date">Coming Soon</span>
-                    <span class="post-tag">behaviour</span>
-                </div>
-                <h2 class="post-title">Measuring Behaviour in Stateful Agent Systems</h2>
-                <p class="post-excerpt">How state, orchestration, and observation points change what an evaluation can validly claim about an agent's behaviour.</p>
-            </a>
-        </li>
-
-        <li class="post-item">
-            <a href="/posts/context-window-management-production" class="post-link">
-                <div class="post-meta">
-                    <span class="post-date">Coming Soon</span>
-                    <span class="post-tag">robustness</span>
-                </div>
-                <h2 class="post-title">When Evaluation Results Depend on the Context Policy</h2>
-                <p class="post-excerpt">Testing whether benchmark conclusions survive changes in retrieval, context budgets, ordering, and repeated runs.</p>
-            </a>
-        </li>
-
-        <li class="post-item">
-            <a href="/posts/oasis-simulation-validation-gap" class="post-link">
-                <div class="post-meta">
-                    <span class="post-date">Coming Soon</span>
-                    <span class="post-tag">research</span>
-                </div>
-                <h2 class="post-title">The Validation Gap in Multi-Agent Simulation</h2>
-                <p class="post-excerpt">A methodology-focused look at construct validity, behavioural baselines, and the evidence required before treating simulated outcomes as meaningful.</p>
-            </a>
-        </li>
-
-        <li class="post-item">
-            <a href="/posts/mcp-security-middleware" class="post-link">
-                <div class="post-meta">
-                    <span class="post-date">Coming Soon</span>
-                    <span class="post-tag">adversarial evaluation</span>
-                </div>
-                <h2 class="post-title">Adversarial Failure Modes at Agent–Tool Boundaries</h2>
-                <p class="post-excerpt">Turning prompt injection, trust-boundary violations, and integrity failures into reproducible test cases rather than one-off demonstrations.</p>
-            </a>
-        </li>
-
     </ul>
+
+    <section class="research-queue" aria-labelledby="research-queue-heading">
+        <h2 class="section-label" id="research-queue-heading">Next experiments</h2>
+        <ul class="queue-list">
+            <li class="queue-item">
+                <div class="queue-topic">Benchmarking agent memory without grading the benchmark</div>
+                <div class="queue-condition">Publication condition: after the controlled memory-type comparison and evaluator checks are run.</div>
+            </li>
+            <li class="queue-item">
+                <div class="queue-topic">Measuring behaviour in stateful agent systems</div>
+                <div class="queue-condition">Publication condition: after the hybrid scorer experiment is run.</div>
+            </li>
+            <li class="queue-item">
+                <div class="queue-topic">Testing evaluation sensitivity to context policy</div>
+                <div class="queue-condition">Publication condition: after retrieval, context-budget, ordering, and repeat-run variants are tested.</div>
+            </li>
+            <li class="queue-item">
+                <div class="queue-topic">Validating multi-agent simulation outcomes</div>
+                <div class="queue-condition">Publication condition: after construct-validity checks and behavioural baselines are evaluated.</div>
+            </li>
+            <li class="queue-item">
+                <div class="queue-topic">Testing adversarial failures at agent–tool boundaries</div>
+                <div class="queue-condition">Publication condition: after prompt-injection, trust-boundary, and integrity test cases are run reproducibly.</div>
+            </li>
+        </ul>
+    </section>
 
     <div class="section-label">Selected Research</div>
 
