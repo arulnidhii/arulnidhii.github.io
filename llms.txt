@@ -30,6 +30,14 @@ Arulnidhi's foundation is more than a decade in data engineering and business in
 
 Quantify Labs and Aegis are supporting provenance for the research programme; the primary identity is AI evaluation and agentic safety research engineering.
 
+## Selected research
+
+### Memory Quality Under Attack
+
+This Aegis research thread covers a clean LongMemEval measurement, false-fact poisoning, utility under the tested attack, a trust-weighted retrieval experiment, and the tested default defense. Findings and numerical claims are intentionally omitted pending verification of the direct public benchmark artifact.
+
+External content dependency: direct public URL for the Aegis memory-poisoning / LongMemEval benchmark artifact (not yet verified; no placeholder link published).
+
 ## Writing
 
 The site covers evaluation design, behavioural measurement, adversarial benchmarks, agent memory integrity, multi-agent validation, and robustness analysis. Posts prioritise experimental design, measurable outcomes, limitations, and reproducibility.

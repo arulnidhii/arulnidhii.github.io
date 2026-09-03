@@ -336,6 +336,13 @@
             margin-top: 0.65rem;
         }
 
+        .project-status {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            margin-bottom: 0.55rem;
+        }
+
         /* ---- ABOUT STRIP ---- */
         .about-strip {
             margin-top: 3rem;
@@ -525,9 +532,17 @@
 
     </ul>
 
-    <div class="section-label">Research focus</div>
+    <div class="section-label">Selected Research</div>
 
     <div class="projects-grid">
+        <!-- External content dependency: add the direct public Aegis/LongMemEval
+             benchmark-artifact URL, and only then publish its verified results. -->
+        <article class="project-card">
+            <div class="project-name">Memory Quality Under Attack</div>
+            <div class="project-status">public artifact verification pending</div>
+            <div class="project-desc">An Aegis memory-poisoning study covering a clean LongMemEval measurement, false-fact poisoning, utility under the tested attack, a trust-weighted retrieval experiment, and the tested default defense. Findings and figures are withheld until the direct public artifact can be verified.</div>
+            <div class="project-tech">LongMemEval · memory poisoning · retrieval trust</div>
+        </article>
         <a href="https://github.com/quantifylabs/aegis-memory" target="_blank" rel="noopener" class="project-card">
             <div class="project-name">Memory integrity</div>
             <div class="project-desc">Testing whether agent memory remains attributable, isolated, retrievable, and resistant to contamination across long-running tasks.</div>
