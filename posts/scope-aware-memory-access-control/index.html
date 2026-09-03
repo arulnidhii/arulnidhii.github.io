@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scope-Aware Memory Access Control for Multi-Agent Systems — Arulnidhi Karunanidhi</title>
+    <meta name="description" content="An evidence-qualified retrospective on memory boundaries in Aegis Memory, and how that engineering work led to evaluation and adversarial-robustness questions.">
+    <meta name="author" content="Arulnidhi Karunanidhi">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Scope-Aware Memory Access Control for Multi-Agent Systems">
+    <meta property="og:description" content="An evidence-qualified retrospective on memory boundaries in Aegis Memory, and how that engineering work led to evaluation and adversarial-robustness questions.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://arulnidhii.github.io/posts/scope-aware-memory-access-control/">
+    <meta property="article:author" content="Arulnidhi Karunanidhi">
+    <link rel="canonical" href="https://arulnidhii.github.io/posts/scope-aware-memory-access-control/">
+
+    <!-- LLMs.txt -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
+
+    <!-- JSON-LD Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Scope-Aware Memory Access Control for Multi-Agent Systems",
+        "description": "An evidence-qualified retrospective on memory boundaries in Aegis Memory, and how that engineering work led to evaluation and adversarial-robustness questions.",
+        "author": {
+            "@type": "Person",
+            "name": "Arulnidhi Karunanidhi",
+            "url": "https://arulnidhii.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Arulnidhi Karunanidhi"
+        },
+        "datePublished": "2026-04-01",
+        "url": "https://arulnidhii.github.io/posts/scope-aware-memory-access-control/",
+        "keywords": ["agent memory", "multi-agent systems", "access control", "pgvector", "context engineering", "Aegis Memory"]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="article-page">
+
+<header>
+    <div class="site-identity">
+        <div class="avatar">AK</div>
+        <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
+    </div>
+    <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
+    <nav aria-label="Primary navigation">
+        <a href="/#research">Research</a>
+        <a href="/publications/">Publications</a>
+        <a href="/#writing" aria-current="page">Writing</a>
+        <a href="/#projects">Projects</a>
+        <a href="/about.html">About</a>
+        <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+</header>
+
+<article>
+    <div class="post-header">
+        <div class="post-meta-top">
+            <span class="post-date">April 1, 2026</span>
+            <span class="post-tag">agent memory</span>
+            <span class="post-reading-time">12 min read</span>
+        </div>
+        <h1>Scope-Aware Memory Access Control for Multi-Agent Systems</h1>
+        <p class="post-subtitle">Earlier engineering notes on memory boundaries in Aegis Memory—and how the difficulty of validating those boundaries led me toward evaluation design, memory-integrity attacks, and adversarial robustness.</p>
+    </div>
+
+    <div class="prose">
+
+        <div class="callout">
+            <p><strong>Evidence status (reviewed September 3, 2026):</strong> This page is retained as an engineering retrospective, not as current product documentation. I could not match the original implementation and performance statements below to stable, publicly inspectable source files, benchmark reports, issues, or commits in the <a href="https://github.com/quantifylabs/aegis-memory">public Aegis repository landing page</a>. I have therefore removed numerical performance claims and recast the code and diagrams as design sketches. Readers can inspect the repository's <a href="https://github.com/quantifylabs/aegis-memory/commits">commit history</a> and <a href="https://github.com/quantifylabs/aegis-memory/issues">issue history</a>; no specific entry is cited here because I found none that substantiated the original account.</p>
+        </div>
+
+        <h2>The engineering question</h2>
+
+        <p>When you have one agent, memory is simple: everything the agent knows is in one bucket. But the moment you have two agents working together, you need to answer a question that most tutorials skip: <strong>who can see what?</strong></p>
+
+        <p>Imagine a research crew: a LiteratureReviewer and a MethodAnalyst working on the same paper. The reviewer discovers a useful finding and stores it in memory. Should the analyst be able to see it? Probably yes — that's shared context. But the reviewer also has notes about its internal reasoning process and dead-end searches. Should the analyst see those too? Probably not — that's noise.</p>
+
+        <p>This is the scope problem, and it gets harder with more agents, longer-running tasks, and production reliability requirements. It is also an evaluation problem: a scope label is not evidence that isolation holds. The relevant question is whether unauthorized information can influence retrieval or downstream behaviour under normal use, malformed inputs, and deliberate attack.</p>
+
+        <img src="/images/scope-aware-3-tier-architecture.svg" alt="3-tier memory scope architecture: global scope at top accessible to all agents, shared scope in the middle accessible within a crew, and private scopes at bottom isolated per agent">
+        <p class="img-caption">Conceptual three-tier model used in the original design notes. This is not a verified diagram of the repository's current or deployed architecture.</p>
+
+        <h2>The three-tier model</h2>
+
+        <p>The original Aegis design notes described three intended tiers of memory scope. The descriptions below record that model; they should not be read as claims about the repository's current implementation.</p>
+
+        <p><strong>Private scope</strong> — memories that belong to a single agent. Internal reasoning steps, failed attempts, scratch calculations. Only the owning agent can read or write.</p>
+
+        <p><strong>Shared scope</strong> — memories visible to all agents in a crew or team. Findings, decisions, agreed-upon context. Any agent in the group can read; writing is controlled by the agent that created the memory.</p>
+
+        <p><strong>Global scope</strong> — memories visible across all teams and sessions. Organisational knowledge, persistent facts, system-wide configuration. Typically written by supervisor agents or system processes.</p>
+
+        <div class="callout">
+            <p><strong>Key insight:</strong> The hard part isn't implementing the three tiers — it's deciding which tier a memory belongs to at write time. If you get the defaults wrong, agents either over-share (noisy context) or under-share (repeated work).</p>
+        </div>
+
+        <h2>Original implementation sketch</h2>
+
+        <p>The earlier design assumed a scope field, an owner identity, and a query-time authorization decision. The following pseudocode illustrates the intended policy. It is not copied from, or verified against, a publicly accessible Aegis source file:</p>
+
+<pre><code>def can_access(agent_id: str, memory: Memory) -> bool:
+    if memory.scope == MemoryScope.GLOBAL:
+        return True
+    if memory.scope == MemoryScope.SHARED:
+        return same_crew(agent_id, memory.owner_agent_id)
+    if memory.scope == MemoryScope.PRIVATE:
+        return agent_id == memory.owner_agent_id
+    return False</code></pre>
+
+        <p>The policy looks simple. The harder evaluation target is the query path: when an agent asks for relevant memories, does filtering happen before candidates or their content can affect ranking, logging, caching, or response construction?</p>
+
+        <p>For a PostgreSQL/pgvector design, one possible approach is to put authorization predicates into the similarity query rather than applying them only after retrieval. The SQL below is illustrative: it demonstrates the risk that post-filtering can reduce useful recall, but it is not verified Aegis SQL and makes no claim about the deployed query planner or index path.</p>
+
+<pre><code>SELECT content, embedding <=> query_embedding AS distance
+FROM memories
+WHERE (
+    scope = 'global'
+    OR (scope = 'shared' AND crew_id = %(crew_id)s)
+    OR (scope = 'private' AND agent_id = %(agent_id)s)
+)
+ORDER BY embedding <=> query_embedding
+LIMIT %(k)s;</code></pre>
+
+        <h2>Claims the public evidence does not currently support</h2>
+
+        <p>The original version said that an OR predicate degraded HNSW-index use at particular memory counts and that three partial indexes fixed it. I found no public benchmark document, query plan, source change, issue, or commit that establishes those results. The scale figures have therefore been removed. The broader idea—benchmarking filtered vector retrieval and examining query plans—is a hypothesis to test, not a measured Aegis result on this page.</p>
+
+        <p>The original version also attributed worse multi-agent performance to a private-by-default policy. I found no public experiment, dataset, or issue supporting that comparison, so I do not present it as a result. It remains a useful failure hypothesis: restrictive defaults may increase redundant work, while permissive defaults may increase leakage and irrelevant context.</p>
+
+        <p>A proposed policy was to treat observations as shared within a group and reasoning or tool traces as private. That distinction is a design proposal, not a verified Aegis default. It would need tests for misclassification, identity spoofing, cross-scope retrieval, updates and deletion, cache leakage, and indirect disclosure through generated answers.</p>
+
+        <img src="/images/scope-filtered-query-flow.svg" alt="Query flow diagram showing how scope filters are applied at the HNSW index scan level using three partial indexes, one per scope tier, before merging and ranking results">
+        <p class="img-caption">An illustrative query-flow hypothesis from the original notes—not evidence that PostgreSQL performs three parallel scans, or that inaccessible memories are never touched, in a released Aegis version.</p>
+
+        <h2>How this led to evaluation and adversarial robustness</h2>
+
+        <p>Trying to reason about scope controls changed the question from “does the schema have private, shared, and global values?” to “what observation would demonstrate that the boundary works?” A useful evaluation needs an explicit threat model, seeded canary memories, authorized and unauthorized principals, retrieval and generation checks, and repeated trials across context and ranking conditions. It must distinguish direct retrieval leakage from subtler influence on an agent's answer.</p>
+
+        <p>The same system creates adversarial questions. Can an untrusted memory forge ownership or provenance? Can prompt content persuade an agent to copy a private fact into shared memory? Can poisoned shared memories crowd out reliable evidence? Do filters still hold after edits, retries, caching, summarization, or tool calls? These are not performance embellishments; they are falsifiable tests of confidentiality, integrity, and availability.</p>
+
+        <p>This is the bridge from memory-system engineering to my current evaluation work. Access-control implementation supplies the object under test. Adversarial cases probe the boundary. Evaluation methodology determines whether the resulting measurements actually support a claim. That thread now has a formal output in the arXiv preprint <a href="/publications/"><cite>Utility Under Attack</cite></a>, which evaluates memory poisoning and retrieval defenses in a reported LongMemEval setup.</p>
+
+        <h2>What I'd change</h2>
+
+        <p>If I were rebuilding the model from scratch, I would evaluate hierarchical or attribute-based scopes rather than assume three tiers are sufficient. A department-level boundary, for example, cannot be represented cleanly by a simplistic agent/group/global hierarchy without precise definitions of group membership and inheritance.</p>
+
+        <p>I would also treat any <strong>memory effectiveness tracker</strong> as a security-sensitive evaluator. Feedback could help identify useful or noisy memories, but automatic promotion creates a new exfiltration path and the feedback itself can be manipulated. Promotion should therefore be evaluated against both utility and leakage, with provenance and authorization preserved.</p>
+
+        <h2>The takeaway</h2>
+
+        <p>Scope-aware access control is a useful starting point for multi-agent memory, but labels and diagrams do not establish isolation. The stronger engineering artifact is a reproducible set of boundary tests, adversarial variants, utility measures, and inspectable evidence that connects each conclusion to code and results.</p>
+
+        <p>If you are assessing Aegis, start with the <a href="https://github.com/quantifylabs/aegis-memory">repository</a>, then consult its <a href="https://github.com/quantifylabs/aegis-memory/commits">commits</a> and <a href="https://github.com/quantifylabs/aegis-memory/issues">issues</a> rather than treating this retrospective as API or performance documentation. I will add source- and benchmark-level citations if stable public artifacts become available.</p>
+
+    </div>
+
+    <a href="/" class="back-link">← Back to all posts</a>
+</article>
+
+<footer>
+    &copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages
+</footer>
+
+</body>
+</html>
