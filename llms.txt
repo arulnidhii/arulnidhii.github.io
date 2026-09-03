@@ -34,6 +34,8 @@ Quantify Labs and Aegis are supporting provenance for the research programme; th
 
 The site covers evaluation design, behavioural measurement, adversarial benchmarks, agent memory integrity, multi-agent validation, and robustness analysis. Posts prioritise experimental design, measurable outcomes, limitations, and reproducibility.
 
+- [Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals](https://arulnidhii.github.io/posts/evaluating-the-evaluator/) — a small learning experiment about deterministic, model-graded, and lexical evaluation methods, including scorer failure analysis and follow-up experiments.
+
 ## Links
 
 - Website: https://arulnidhii.github.io
