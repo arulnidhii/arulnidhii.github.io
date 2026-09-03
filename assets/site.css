@@ -159,6 +159,14 @@ h1 { margin-bottom: 1.5rem; font-family: var(--serif); font-size: 2rem; font-wei
 .citation-heading { margin: 1.75rem 0 .5rem; font-family: var(--serif); font-size: 1.1rem; font-weight: 500; }
 .citation-block { padding: 1rem; overflow-x: auto; border-radius: var(--radius); background: var(--code-bg); color: var(--code-text); font-family: var(--mono); font-size: .72rem; line-height: 1.65; white-space: pre-wrap; }
 
+/* Not found */
+.not-found-page main { padding-top: 2rem; text-align: center; }
+.error-code { margin-bottom: .5rem; color: var(--accent); font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+.error-message { max-width: 52ch; margin: 0 auto; color: var(--ink-secondary); }
+.error-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem 1.5rem; margin-top: 1.75rem; }
+.error-links a { color: var(--accent); font-family: var(--mono); font-size: .78rem; text-decoration-thickness: 1px; }
+.error-links a:hover { color: var(--accent-hover); }
+
 /* Experiment results */
 .table-wrap { margin: 1.75rem 0; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised); box-shadow: var(--shadow-subtle); scrollbar-color: var(--border-strong) var(--surface-warm); }
 .table-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
@@ -178,8 +186,7 @@ footer { padding: 2rem 1.5rem; border-top: 1px solid var(--border); color: var(-
 @media (max-width: 640px) {
     header { padding: 2rem 1.25rem 1.5rem; }
     main, article { padding: 0 1.25rem 3rem; }
-    .about-page main { padding-top: 1.5rem; }
-    .publication-page main { padding-top: 1.5rem; }
+    .about-page main, .publication-page main, .not-found-page main { padding-top: 1.5rem; }
     .publication-entry { padding: 1.25rem; }
     .site-name { font-size: 1.35rem; }
     h1 { font-size: 1.7rem; }
