@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals — Arulnidhi Karunanidhi</title>
+    <meta name="description" content="A small learning experiment about evaluator choice, aggregate metrics, transcript inspection, and a broken lexical scorer.">
+    <meta name="author" content="Arulnidhi Karunanidhi">
+    <meta property="og:title" content="Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals">
+    <meta property="og:description" content="A small learning experiment about evaluator choice, aggregate metrics, transcript inspection, and a broken lexical scorer.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://arulnidhii.github.io/posts/evaluating-the-evaluator/">
+    <meta property="article:author" content="Arulnidhi Karunanidhi">
+    <link rel="canonical" href="https://arulnidhii.github.io/posts/evaluating-the-evaluator/">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals",
+        "description": "A small learning experiment about evaluator choice, aggregate metrics, transcript inspection, and a broken lexical scorer.",
+        "author": {"@type": "Person", "name": "Arulnidhi Karunanidhi", "url": "https://arulnidhii.github.io"},
+        "datePublished": "2026-09-03",
+        "url": "https://arulnidhii.github.io/posts/evaluating-the-evaluator/",
+        "keywords": ["LLM evaluations", "evaluation methodology", "scorers", "model grading"]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=JetBrains+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+        :root { --ink:#1a1a1a; --ink-secondary:#555; --ink-muted:#888; --surface:#faf9f7; --surface-warm:#f3f1ed; --accent:#c45d3e; --accent-light:rgba(196,93,62,.08); --border:#e5e2dc; --serif:'Newsreader',Georgia,serif; --sans:'DM Sans',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace; --max-w:720px; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:var(--sans); background:var(--surface); color:var(--ink); line-height:1.7; -webkit-font-smoothing:antialiased; }
+        header, article, footer { max-width:var(--max-w); margin:0 auto; }
+        header { padding:3rem 1.5rem 2rem; }
+        .site-identity { display:flex; align-items:center; gap:1.25rem; margin-bottom:1rem; }
+        .avatar { width:64px; height:64px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.5rem; font-weight:600; color:#fff; flex-shrink:0; }
+        .site-name { font-family:var(--serif); font-size:1.65rem; font-weight:600; letter-spacing:-.02em; }
+        .site-name a, nav a, .back-link { color:inherit; text-decoration:none; }
+        .site-tagline { font-family:var(--serif); font-size:1.05rem; font-style:italic; color:var(--ink-secondary); margin-bottom:1.5rem; }
+        nav { display:flex; gap:1.75rem; padding-bottom:1.5rem; border-bottom:1.5px solid var(--border); }
+        nav a { font-size:.88rem; font-weight:500; color:var(--ink-secondary); }
+        nav a:hover { color:var(--accent); }
+        article { padding:0 1.5rem 4rem; }
+        .post-header { padding:2rem 0 1.5rem; border-bottom:1px solid var(--border); margin-bottom:2rem; }
+        .post-meta { display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem; }
+        .post-date, .reading-time { font-family:var(--mono); font-size:.78rem; color:var(--ink-muted); }
+        .post-tag { font-family:var(--mono); font-size:.68rem; font-weight:500; color:var(--accent); background:var(--accent-light); padding:.15rem .55rem; border-radius:3px; }
+        h1 { font-family:var(--serif); font-size:2rem; font-weight:600; letter-spacing:-.025em; line-height:1.2; margin-bottom:.75rem; }
+        .subtitle { font-size:1.05rem; color:var(--ink-secondary); line-height:1.6; }
+        .prose h2 { font-family:var(--serif); font-size:1.45rem; font-weight:500; margin:2.5rem 0 1rem; letter-spacing:-.01em; }
+        .prose h3 { font-size:1.02rem; margin:1.75rem 0 .65rem; }
+        .prose p, .prose li { font-size:1rem; line-height:1.85; }
+        .prose p { margin-bottom:1.25rem; }
+        .prose ul { margin:0 0 1.25rem 1.4rem; }
+        .prose li { padding-left:.25rem; margin-bottom:.45rem; }
+        .prose code { font-family:var(--mono); font-size:.85em; background:var(--surface-warm); padding:.15em .4em; border-radius:3px; }
+        .callout { background:var(--accent-light); border-left:3px solid var(--accent); padding:1rem 1.25rem; border-radius:0 6px 6px 0; margin:1.5rem 0; }
+        .callout p { margin:0; font-size:.94rem; color:var(--ink-secondary); }
+        table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:.9rem; }
+        th, td { text-align:left; padding:.75rem .65rem; border-bottom:1px solid var(--border); vertical-align:top; }
+        th { font-family:var(--mono); font-size:.72rem; color:var(--ink-secondary); }
+        .table-wrap { overflow-x:auto; }
+        .back-link { display:block; margin-top:2rem; padding-top:2rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:.82rem; color:var(--accent); }
+        footer { padding:2rem 1.5rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:.72rem; color:var(--ink-muted); text-align:center; }
+        @media (max-width:640px) { header { padding:2rem 1.25rem 1.5rem; } article { padding:0 1.25rem 3rem; } h1 { font-size:1.65rem; } .site-name { font-size:1.35rem; } nav { gap:1.25rem; } }
+    </style>
+</head>
+<body>
+<header>
+    <div class="site-identity"><div class="avatar">AK</div><div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div></div>
+    <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
+    <nav><a href="/">Blog</a><a href="/about">About</a><a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a></nav>
+</header>
+<article>
+    <div class="post-header">
+        <div class="post-meta"><span class="post-date">September 3, 2026</span><span class="post-tag">evaluation methodology</span><span class="reading-time">7 min read</span></div>
+        <h1>Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals</h1>
+        <p class="subtitle">Three tiny evaluations moved from exact answers to semantic corrections—and showed why a score can describe the evaluator as much as the model.</p>
+    </div>
+    <div class="prose">
+        <div class="callout"><p><strong>Scope:</strong> This was a small learning experiment about evaluation methodology, not a GPT-5 benchmark. The sample sizes are too small for broad claims about model capability.</p></div>
+
+        <h2>Question</h2>
+        <p>What happens when the task changes faster than the scorer? I wanted to see how three evaluation choices behaved as answers moved from objectively checkable arithmetic to open-ended corrections of false premises.</p>
+
+        <h2>Why I tested it</h2>
+        <p>An aggregate accuracy can look authoritative even when its scoring rule does not measure the behavior the task asks for. The aim was not to rank a model. It was to learn where deterministic matching, model grading, and a lexical target check agree—and where inspecting the underlying transcripts changes the interpretation.</p>
+
+        <h2>Experimental setup</h2>
+        <p>I ran three small evaluations:</p>
+        <ul>
+            <li><strong>Eval 01:</strong> five arithmetic samples scored deterministically with <code>match()</code>.</li>
+            <li><strong>Eval 02:</strong> five open-ended false-premise prompts scored with <code>model_graded_qa()</code>.</li>
+            <li><strong>Eval 03:</strong> an initial four-sample run scored by lexical target matching, followed by a revised five-sample run.</li>
+        </ul>
+        <p>No public code or logs are linked here because no verified public URL was supplied.</p>
+
+        <h2>Prediction</h2>
+        <p>I expected exact matching to work for constrained arithmetic, and model grading to be better suited to open-ended corrections. I also expected a simple lexical target rule to be reproducible, but potentially misaligned with semantic correctness.</p>
+
+        <h2>Result</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Evaluation</th><th>Samples</th><th>Scorer</th><th>Observed result</th></tr></thead>
+                <tbody>
+                    <tr><td>Eval 01</td><td>5</td><td><code>match()</code></td><td>5/5; accuracy 1.0</td></tr>
+                    <tr><td>Eval 02</td><td>5</td><td><code>model_graded_qa()</code></td><td>5 observed correct grades; accuracy 1.0</td></tr>
+                    <tr><td>Eval 03, initial</td><td>4</td><td>Lexical target matching</td><td>Accuracy 0.50; stderr ≈ 0.289</td></tr>
+                    <tr><td>Eval 03, revised</td><td>5</td><td>Revised run</td><td>Accuracy 0.60; stderr ≈ 0.245</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Aggregate metric</h2>
+        <p>The first two accuracy values were both 1.0, but they came from different measurement processes: deterministic matching for five arithmetic answers, and five model-assigned grades for open-ended answers. Equal aggregates did not make the scorers interchangeable.</p>
+        <p>Eval 03 made uncertainty harder to ignore. Its initial accuracy was 0.50 with standard error approximately 0.289 across four samples. The revised five-sample run reached 0.60 with standard error approximately 0.245. These are descriptive results from tiny runs, not stable estimates of general performance.</p>
+
+        <h2>Transcript inspection</h2>
+        <p>The initial Eval 03 aggregate hid the most useful finding. Reading the sample-level records showed that two responses made the right semantic corrections but were rejected because they did not satisfy the lexical target match. The scorer marked surface-form disagreement, not substantive error.</p>
+        <p>This is why transcript inspection was not merely debugging after the metric. It was part of validating what the metric meant.</p>
+
+        <h2>Failure mode</h2>
+        <p>The broken assumption was that the presence or absence of a target string could stand in for semantic correctness. That rule can create false negatives, as the two rejected corrections showed. It can also create a structural false-positive vulnerability: mentioning the expected term is not the same as correctly resolving the premise.</p>
+        <p>The Canberra item illustrates that second weakness. Its lexical structure left the scorer vulnerable to accepting the target term without establishing that the response had made the right correction. The observed GPT-5 run did <strong>not</strong> trigger that vulnerability. It remains a property of the scoring design, not an observed model failure.</p>
+
+        <h2>Follow-up</h2>
+        <p>The revised run expanded Eval 03 from four to five samples. Its observed accuracy was 0.60 and its standard error was approximately 0.245. That change did not, by itself, validate the scorer; it provided another small result while keeping the scorer-design question visible.</p>
+        <p>A better next scorer would be hybrid:</p>
+        <ul>
+            <li><strong>Structural checks</strong> verify task-specific requirements that can be tested deterministically.</li>
+            <li><strong>Semantic grading</strong> assesses whether the response actually identifies and corrects the false premise.</li>
+            <li><strong>Recorded component outcomes</strong> keep the final decision auditable instead of collapsing every judgment immediately into one bit.</li>
+        </ul>
+
+        <h2>Limitations</h2>
+        <ul>
+            <li>The evaluations contained only four or five samples per run.</li>
+            <li>The observations do not establish repeatability across prompts, graders, or runs.</li>
+            <li>Eval 02's perfect score is still mediated by a model grader; it is not ground truth merely because it is 1.0.</li>
+            <li>The Canberra weakness was identified structurally, but was not triggered by the observed GPT-5 run.</li>
+            <li>A hybrid scorer introduces new risks: structural rules can remain brittle, semantic judges can be inconsistent or biased, and conflicts between components require an explicit resolution policy.</li>
+        </ul>
+        <p>Most importantly, this was a small learning experiment about evaluation methodology, not a GPT-5 benchmark.</p>
+
+        <h2>Next experiments</h2>
+        <ul>
+            <li>Test the hybrid scorer on paraphrases that preserve meaning while varying surface form.</li>
+            <li>Add adversarial answers that contain a target term but do not make the required correction.</li>
+            <li>Compare structural and semantic component decisions before combining them.</li>
+            <li>Repeat the evaluation with larger sample sets and report disagreement and uncertainty alongside accuracy.</li>
+            <li>Manually review scorer disagreements to separate model errors from evaluator errors.</li>
+        </ul>
+        <p>The practical lesson is simple: before trusting an evaluation score, evaluate the evaluator.</p>
+    </div>
+    <a href="/" class="back-link">← Back to all posts</a>
+</article>
+<footer>&copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages</footer>
+</body>
+</html>
