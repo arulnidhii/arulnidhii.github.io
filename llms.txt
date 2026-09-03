@@ -1,53 +1,34 @@
 # Arulnidhi Karunanidhi
 
-> Research Engineer — AI Evaluations & Agentic Safety.
+Arulnidhi Karunanidhi is an AI evaluations and research engineer working on LLM and agent evaluations, adversarial model behaviour, scorer robustness, memory poisoning, and agentic AI safety.
 
-## Research identity
+## Research interests
 
-Arulnidhi designs empirical evaluations for agentic AI systems and studies behavioural measurement, adversarial failure modes, memory integrity, and evaluation robustness.
+- **LLM and agent evaluations:** constructing reproducible evaluations for model-graded, stateful, and multi-agent systems, including work with Inspect AI.
+- **Adversarial model behaviour:** testing safety-relevant behaviour under controlled attacks, trust-boundary violations, and agent–tool failure conditions.
+- **Scorer robustness:** examining whether model graders and deterministic scorers measure the intended construct across prompt, model, context, and repeated-run variations.
+- **Memory poisoning and long-context evaluation:** measuring how false facts, provenance, retrieval policy, and context construction affect downstream agent behaviour.
+- **Agentic AI safety:** producing bounded, reproducible evidence about the capabilities and failure modes of agentic AI systems.
 
-His work follows a practical research trajectory:
+## Projects
 
-**systems engineering → agent memory → adversarial benchmarking → evaluation methodology → agentic AI safety**
+### Aegis Memory
 
-The objective is to make claims about agent behaviour testable and appropriately bounded: define the construct, establish meaningful baselines, expose systems to controlled and adversarial conditions, repeat trials, measure sensitivity, and document where results stop generalising.
+[Aegis Memory](https://github.com/quantifylabs/aegis-memory) is a scope-aware persistent-memory system and an experimental substrate for studying isolation, provenance, retrieval, long-context behaviour, and memory-poisoning risks in multi-agent systems.
 
-## Research themes
+### Evaluation robustness
 
-- **Behavioural measurement:** valid, reproducible measures for stateful and multi-agent systems.
-- **Adversarial failure modes:** systematic tests for contamination, trust-boundary violations, deceptive or unstable behaviour, and tool-use failures.
-- **Memory integrity:** attribution, isolation, retrieval, provenance, and the downstream behavioural effects of corrupted or missing memory.
-- **Evaluation robustness:** sensitivity to task construction, prompts, judges, models, context policies, baselines, and repeated runs.
-- **Agentic AI safety:** using empirical evaluation to characterise capabilities, limitations, and safety-relevant failure modes.
-
-## Background and provenance
-
-Arulnidhi's foundation is more than a decade in data engineering and business intelligence, followed by work on persistent memory for multi-agent systems. This systems background informs an emphasis on reliability, observability, lineage, and failure analysis.
-
-- [Aegis Memory](https://github.com/quantifylabs/aegis-memory) is the principal engineering artefact behind the memory-integrity work. It implements persistent, scope-aware memory for multi-agent AI systems.
-- [Quantify Labs Ltd.](https://find-and-update.company-information.service.gov.uk/company/16027803) is the UK-registered organisation through which Aegis was developed.
-- MSc Big Data Analytics, Sheffield Hallam University.
-
-Quantify Labs and Aegis are supporting provenance for the research programme; the primary identity is AI evaluation and agentic safety research engineering.
-
-## Selected research
-
-### Memory Quality Under Attack
-
-This Aegis research thread covers a clean LongMemEval measurement, false-fact poisoning, utility under the tested attack, a trust-weighted retrieval experiment, and the tested default defense. Findings and numerical claims are intentionally omitted pending verification of the direct public benchmark artifact.
-
-External content dependency: direct public URL for the Aegis memory-poisoning / LongMemEval benchmark artifact (not yet verified; no placeholder link published).
+Ongoing evaluation research tests model grading, scorer failure modes, adversarial variants, meaningful baselines, and sensitivity to prompts and context policies. Numerical claims are published only when a directly accessible benchmark artifact supports them.
 
 ## Writing
 
-The site covers evaluation design, behavioural measurement, adversarial benchmarks, agent memory integrity, multi-agent validation, and robustness analysis. Posts prioritise experimental design, measurable outcomes, limitations, and reproducibility.
-
-- [Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals](https://arulnidhii.github.io/posts/evaluating-the-evaluator/) — a small learning experiment about deterministic, model-graded, and lexical evaluation methods, including scorer failure analysis and follow-up experiments.
+- [Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals](https://arulnidhii.github.io/posts/evaluating-the-evaluator/) — an experiment comparing deterministic, model-graded, and lexical methods, with scorer failure analysis and follow-up tests.
+- [Scope-Aware Memory Access Control for Multi-Agent Systems](https://arulnidhii.github.io/posts/scope-aware-memory-access-control.html) — a case study of memory boundaries, threat modeling, and failure testing in a multi-agent system.
 
 ## Links
 
-- Website: https://arulnidhii.github.io
+- Website: https://arulnidhii.github.io/
 - GitHub: https://github.com/arulnidhii
 - LinkedIn: https://linkedin.com/in/arulnidhikarunanidhi
 - Aegis Memory: https://github.com/quantifylabs/aegis-memory
-- Quantify Labs provenance: https://find-and-update.company-information.service.gov.uk/company/16027803
+- Quantify Labs: https://github.com/quantifylabs
