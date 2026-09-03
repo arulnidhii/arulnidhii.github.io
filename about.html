@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — Arulnidhi Karunanidhi</title>
-    <meta name="description" content="Research engineer designing empirical evaluations for agentic AI systems and studying behavioural measurement, adversarial failure modes, memory integrity, and evaluation robustness.">
+    <meta name="description" content="Research engineer working on empirical evaluations of agentic AI systems under adversarial and ambiguous conditions.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -93,33 +93,15 @@
             font-family: var(--serif); font-size: 1.3rem; font-weight: 500;
             margin: 2rem 0 0.75rem; letter-spacing: -0.01em;
         }
-        .cert-list {
+        .focus-list {
             list-style: none; padding: 0;
         }
-        .cert-list li {
+        .focus-list li {
             font-size: 0.92rem; color: var(--ink-secondary);
             padding: 0.3rem 0; padding-left: 1.25rem; position: relative;
         }
-        .cert-list li::before {
+        .focus-list li::before {
             content: '→'; position: absolute; left: 0; color: var(--accent);
-        }
-
-        .timeline {
-            margin-top: 2rem;
-            border-left: 2px solid var(--border);
-            padding-left: 1.5rem;
-        }
-        .timeline-item { margin-bottom: 1.75rem; }
-        .timeline-year {
-            font-family: var(--mono); font-size: 0.78rem;
-            color: var(--accent); margin-bottom: 0.25rem;
-        }
-        .timeline-event {
-            font-size: 0.95rem; font-weight: 500; color: var(--ink);
-            margin-bottom: 0.2rem;
-        }
-        .timeline-detail {
-            font-size: 0.88rem; color: var(--ink-secondary); line-height: 1.6;
         }
 
         footer {
@@ -144,7 +126,7 @@
         <div class="avatar">AK</div>
         <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
     </div>
-    <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
+    <p class="site-tagline">Research Engineer — AI Evaluations</p>
     <nav>
         <a href="/">Blog</a>
         <a href="/about.html" class="active">About</a>
@@ -154,59 +136,27 @@
 </header>
 
 <main>
-    <h1>Research Engineer — AI Evaluations &amp; Agentic Safety</h1>
+    <h1>About</h1>
 
     <div class="about-content">
-        <p>I design empirical evaluations for agentic AI systems and study behavioural measurement, adversarial failure modes, memory integrity, and evaluation robustness.</p>
+        <p>My current work focuses on the empirical evaluation of agentic AI systems under adversarial or ambiguous conditions. I build experiments that examine how agents behave when instructions, evidence, or operating contexts are incomplete, conflicting, or deliberately manipulated.</p>
 
-        <p>The aim is to make claims about agent behaviour testable: define the construct, expose the system to controlled and adversarial conditions, measure outcomes across repeated runs, and report where the result stops generalising.</p>
+        <p>Earlier, I built <a href="https://github.com/quantifylabs/aegis-memory">Aegis Memory</a>, an open-source testbed for persistent memory in agent systems. Benchmarking the quality of stored and retrieved memories led to questions about memory poisoning, provenance, adversarial retrieval, and the methods used to evaluate those effects.</p>
 
-        <h2>Research trajectory</h2>
+        <p>I am extending this work into broader behavioural and agent evaluations using Inspect AI, with an emphasis on clearly defined tasks, appropriate scorers, and reproducible analysis.</p>
 
-        <p><strong>Systems engineering → agent memory → adversarial benchmarking → evaluation methodology → agentic AI safety.</strong></p>
-
-        <p>More than a decade in data engineering and business intelligence established a systems view of reliability, observability, data lineage, and failure recovery. Building stateful agent systems then made memory a measurement problem: what was stored, what was retrieved, what crossed a boundary, and how those choices altered later behaviour.</p>
-
-        <p>That work now informs adversarial benchmarks and evaluation methodology. I am interested in experiments that distinguish system capability from benchmark artefacts, surface behavioural changes under attack or distribution shift, and remain robust to evaluator, prompt, model, and context-policy choices.</p>
-
-        <h2>Current questions</h2>
-        <ul class="cert-list">
-            <li>Which behavioural measures are valid, reproducible, and useful for stateful agents?</li>
-            <li>How do memory contamination, attribution loss, and access-boundary failures propagate into action?</li>
-            <li>Which adversarial cases reveal systematic failure modes rather than isolated anecdotes?</li>
-            <li>How sensitive are evaluation conclusions to prompts, judges, baselines, and task construction?</li>
+        <h2>Current focus</h2>
+        <ul class="focus-list">
+            <li>LLM and agent evaluation design</li>
+            <li>Inspect AI evaluation development</li>
+            <li>Scorer validity and measurement quality</li>
+            <li>Adversarial agent behaviour</li>
+            <li>Memory poisoning and provenance</li>
+            <li>Python research engineering</li>
         </ul>
 
-        <h2>Selected provenance</h2>
-
-        <p><a href="https://github.com/quantifylabs/aegis-memory">Aegis Memory</a> is the principal engineering artefact behind the memory-integrity work: a persistent memory system for multi-agent AI with scoped access boundaries. <a href="https://find-and-update.company-information.service.gov.uk/company/16027803">Quantify Labs Ltd.</a> is the UK-registered organisation through which that work has been developed. These provide implementation provenance for the research direction rather than define it.</p>
-
+        <h2>Education</h2>
         <p>I hold an MSc in Big Data Analytics from Sheffield Hallam University.</p>
-
-        <h2>Trajectory</h2>
-
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-year">Evaluation methodology</div>
-                <div class="timeline-event">Robust empirical claims</div>
-                <div class="timeline-detail">Designing measures, baselines, adversarial variants, repeated trials, and sensitivity checks for agentic systems.</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">Adversarial benchmarking</div>
-                <div class="timeline-event">Failure modes as test cases</div>
-                <div class="timeline-detail">Converting contamination, boundary violations, and behavioural instability into reproducible experiments.</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">Agent memory</div>
-                <div class="timeline-event">Aegis Memory</div>
-                <div class="timeline-detail">Engineering persistent, scope-aware memory exposed integrity, provenance, and behavioural measurement questions.</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">Systems engineering</div>
-                <div class="timeline-event">Data systems and reliability</div>
-                <div class="timeline-detail">A decade-plus foundation in production data engineering and business intelligence.</div>
-            </div>
-        </div>
 
         <h2>Contact</h2>
         <p>Find my work on <a href="https://github.com/arulnidhii">GitHub</a> or connect on <a href="https://linkedin.com/in/arulnidhikarunanidhi">LinkedIn</a>.</p>
