@@ -60,7 +60,7 @@
             color: var(--ink-secondary); margin-bottom: 1.5rem; line-height: 1.5;
         }
         nav {
-            display: flex; gap: 1.75rem;
+            display: flex; flex-wrap: wrap; gap: 1.75rem;
             padding-bottom: 1.5rem; border-bottom: 1.5px solid var(--border);
         }
         nav a {
@@ -69,6 +69,13 @@
             letter-spacing: 0.02em; transition: color 0.2s;
         }
         nav a:hover, nav a.active { color: var(--accent); }
+        nav a[aria-current="page"] {
+            color: var(--accent); font-weight: 600; text-decoration: underline;
+            text-decoration-thickness: 2px; text-underline-offset: 0.35rem;
+        }
+        a:focus-visible {
+            outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 2px;
+        }
 
         main {
             max-width: var(--max-w);
@@ -115,7 +122,7 @@
             main { padding: 1.5rem 1.25rem 3rem; }
             .site-name { font-size: 1.35rem; }
             h1 { font-size: 1.6rem; }
-            nav { gap: 1.25rem; }
+            nav { column-gap: 1.25rem; row-gap: 0.75rem; }
         }
     </style>
 </head>
@@ -127,9 +134,11 @@
         <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
     </div>
     <p class="site-tagline">Research Engineer — AI Evaluations</p>
-    <nav>
-        <a href="/">Blog</a>
-        <a href="/about.html" class="active">About</a>
+    <nav aria-label="Primary navigation">
+        <a href="/#research">Research</a>
+        <a href="/#writing">Writing</a>
+        <a href="/#projects">Projects</a>
+        <a href="/about.html" class="active" aria-current="page">About</a>
         <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
     </nav>

@@ -155,6 +155,7 @@
 
         nav {
             display: flex;
+            flex-wrap: wrap;
             gap: 1.75rem;
             padding-bottom: 1.5rem;
             border-bottom: 1.5px solid var(--border);
@@ -172,6 +173,20 @@
 
         nav a:hover, nav a.active {
             color: var(--accent);
+        }
+
+        nav a[aria-current="page"] {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 0.35rem;
+        }
+
+        a:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+            border-radius: 2px;
         }
 
         /* ---- MAIN ---- */
@@ -459,7 +474,7 @@
             .post-title { font-size: 1.15rem; }
             .projects-grid { grid-template-columns: 1fr; }
             .post-item.featured { margin: 0 -1.25rem; padding: 1.25rem; }
-            nav { gap: 1.25rem; }
+            nav { column-gap: 1.25rem; row-gap: 0.75rem; }
             .connect-links { flex-wrap: wrap; }
         }
     </style>
@@ -472,8 +487,10 @@
         <div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div>
     </div>
     <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
-    <nav>
-        <a href="/" class="active">Blog</a>
+    <nav aria-label="Primary navigation">
+        <a href="#research">Research</a>
+        <a href="#writing">Writing</a>
+        <a href="#projects">Projects</a>
         <a href="/about.html">About</a>
         <a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a>
@@ -487,7 +504,8 @@
         <p>My work follows a practical research arc: <strong>systems engineering → agent memory → adversarial benchmarking → evaluation methodology → agentic AI safety</strong>. I write about experiments, measurement choices, failure analysis, and the evidence needed to make claims about agent behaviour.</p>
     </section>
 
-    <div class="section-label">Writing</div>
+    <section id="writing" aria-labelledby="writing-heading">
+    <h2 class="section-label" id="writing-heading">Writing</h2>
 
     <ul class="post-list">
 
@@ -514,9 +532,10 @@
         </li>
 
     </ul>
+    </section>
 
-    <section class="research-queue" aria-labelledby="research-queue-heading">
-        <h2 class="section-label" id="research-queue-heading">Next experiments</h2>
+    <section class="research-queue" id="research" aria-labelledby="research-heading">
+        <h2 class="section-label" id="research-heading">Research</h2>
         <ul class="queue-list">
             <li class="queue-item">
                 <div class="queue-topic">Benchmarking agent memory without grading the benchmark</div>
@@ -541,7 +560,8 @@
         </ul>
     </section>
 
-    <div class="section-label">Selected Research</div>
+    <section id="projects" aria-labelledby="projects-heading">
+    <h2 class="section-label" id="projects-heading">Projects</h2>
 
     <div class="projects-grid">
         <a href="https://github.com/quantifylabs/aegis-memory" target="_blank" rel="noopener" class="project-card">
@@ -555,6 +575,7 @@
             <div class="project-tech">measurement · benchmarking · failure analysis</div>
         </a>
     </div>
+    </section>
 
     <div class="about-strip">
         <h3>Engineering evidence for agentic AI</h3>
