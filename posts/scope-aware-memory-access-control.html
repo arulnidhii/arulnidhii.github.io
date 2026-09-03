@@ -54,6 +54,7 @@
     <p class="site-tagline">Building agent memory &amp; infrastructure — one system at a time.</p>
     <nav aria-label="Primary navigation">
         <a href="/#research">Research</a>
+        <a href="/publications/">Publications</a>
         <a href="/#writing" aria-current="page">Writing</a>
         <a href="/#projects">Projects</a>
         <a href="/about.html">About</a>
@@ -148,7 +149,7 @@ LIMIT %(k)s;</code></pre>
 
         <p>The same system creates adversarial questions. Can an untrusted memory forge ownership or provenance? Can prompt content persuade an agent to copy a private fact into shared memory? Can poisoned shared memories crowd out reliable evidence? Do filters still hold after edits, retries, caching, summarization, or tool calls? These are not performance embellishments; they are falsifiable tests of confidentiality, integrity, and availability.</p>
 
-        <p>This is the bridge from memory-system engineering to my current evaluation work. Access-control implementation supplies the object under test. Adversarial cases probe the boundary. Evaluation methodology determines whether the resulting measurements actually support a claim. Until reproducible artifacts are public, this article records the questions and engineering lineage rather than claiming benchmark outcomes.</p>
+        <p>This is the bridge from memory-system engineering to my current evaluation work. Access-control implementation supplies the object under test. Adversarial cases probe the boundary. Evaluation methodology determines whether the resulting measurements actually support a claim. That thread now has a formal output in the arXiv preprint <a href="/publications/"><cite>Utility Under Attack</cite></a>, which evaluates memory poisoning and retrieval defenses in a reported LongMemEval setup.</p>
 
         <h2>What I'd change</h2>
 

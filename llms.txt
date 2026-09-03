@@ -10,6 +10,17 @@ Arulnidhi Karunanidhi is an AI evaluations and research engineer working on LLM 
 - **Memory poisoning and long-context evaluation:** measuring how false facts, provenance, retrieval policy, and context construction affect downstream agent behaviour.
 - **Agentic AI safety:** producing bounded, reproducible evidence about the capabilities and failure modes of agentic AI systems.
 
+## Publications
+
+### Utility Under Attack: Agent Memory Poisoning and the Limits of Content Screening and Provenance Ranking
+
+Arulnidhi Karunanidhi. arXiv preprint, arXiv:2608.21230, first submitted August 21, 2026. This paper studies how a small amount of false information stored in persistent agent memory can reduce downstream task accuracy. In the evaluated LongMemEval setup, it tests content screening and provenance-weighted retrieval, identifies limits in both defenses, and motivates bounded occupancy constraints for retrieval. It is the formal output of the memory-poisoning / LongMemEval research thread and supports a broader focus on empirical evaluation of agentic AI systems.
+
+- Publication page: https://arulnidhii.github.io/publications/
+- arXiv record: https://arxiv.org/abs/2608.21230
+- Read HTML: https://arxiv.org/html/2608.21230
+- Download PDF: https://arxiv.org/pdf/2608.21230
+
 ## Projects
 
 ### Aegis Memory

@@ -29,7 +29,9 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
+        "@graph": [{
         "@type": "Person",
+        "@id": "https://arulnidhii.github.io/#arulnidhi-karunanidhi",
         "name": "Arulnidhi Karunanidhi",
         "url": "https://arulnidhii.github.io/",
         "jobTitle": "AI Evaluations & Research Engineer",
@@ -61,7 +63,16 @@
             "https://github.com/quantifylabs",
             "https://linkedin.com/in/arulnidhikarunanidhi",
             "https://dev.to/arulnidhi"
-        ]
+        ],
+        "subjectOf": {"@id": "https://arulnidhii.github.io/publications/#utility-under-attack"}
+        }, {
+            "@type": "ScholarlyArticle",
+            "@id": "https://arulnidhii.github.io/publications/#utility-under-attack",
+            "name": "Utility Under Attack: Agent Memory Poisoning and the Limits of Content Screening and Provenance Ranking",
+            "author": {"@id": "https://arulnidhii.github.io/#arulnidhi-karunanidhi"},
+            "url": "https://arulnidhii.github.io/publications/",
+            "sameAs": "https://arxiv.org/abs/2608.21230"
+        }]
     }
     </script>
 
@@ -82,6 +93,7 @@
     <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
     <nav aria-label="Primary navigation">
         <a href="#research">Research</a>
+        <a href="/publications/">Publications</a>
         <a href="#writing">Writing</a>
         <a href="#projects">Projects</a>
         <a href="/about.html">About</a>
@@ -129,6 +141,12 @@
 
     <section class="research-queue" id="research" aria-labelledby="research-heading">
         <h2 class="section-label" id="research-heading">Research</h2>
+        <a class="research-publication" href="/publications/">
+            <span class="publication-kicker">arXiv preprint · 2026</span>
+            <strong>Utility Under Attack: Agent Memory Poisoning and the Limits of Content Screening and Provenance Ranking</strong>
+            <span>An empirical study of memory poisoning, content screening, provenance-weighted retrieval, and evaluation robustness in the reported LongMemEval setup.</span>
+            <span class="publication-cta">Read the publication →</span>
+        </a>
         <ul class="queue-list">
             <li class="queue-item">
                 <div class="queue-topic">Benchmarking agent memory without grading the benchmark</div>
@@ -157,9 +175,9 @@
     <h2 class="section-label" id="projects-heading">Projects</h2>
 
     <div class="projects-grid">
-        <a href="https://github.com/quantifylabs/aegis-memory" target="_blank" rel="noopener" class="project-card">
+        <a href="/publications/" class="project-card">
             <div class="project-name">Memory integrity</div>
-            <div class="project-desc">Testing whether agent memory remains attributable, isolated, retrievable, and resistant to contamination across long-running tasks.</div>
+            <div class="project-desc">Aegis Memory is testbed infrastructure connected to the published study of whether persistent agent memory remains useful under poisoning.</div>
             <div class="project-tech">provenance · access boundaries · retrieval</div>
         </a>
         <a href="/about.html" class="project-card">
