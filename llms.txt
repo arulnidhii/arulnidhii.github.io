@@ -34,6 +34,7 @@ Ongoing evaluation research tests model grading, scorer failure modes, adversari
 ## Writing
 
 - [Evaluating the Evaluator: What a Broken Scorer Taught Me About LLM Evals](https://arulnidhii.github.io/posts/evaluating-the-evaluator/) — an experiment comparing deterministic, model-graded, and lexical methods, with scorer failure analysis and follow-up tests.
+- [Evaluating the Evaluator, Part II: Testing a Hybrid Scorer](https://arulnidhii.github.io/posts/testing-a-hybrid-scorer/) — a controlled eight-case validation of brittle and hybrid scorers, including paraphrases, contradictions, false corrections, and structural failures.
 - [Scope-Aware Memory Access Control for Multi-Agent Systems](https://arulnidhii.github.io/posts/scope-aware-memory-access-control/) — a case study of memory boundaries, threat modeling, and failure testing in a multi-agent system.
 
 ## Links

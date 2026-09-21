@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluating the Evaluator, Part II: Testing a Hybrid Scorer — Arulnidhi Karunanidhi</title>
+    <meta name="description" content="A small Inspect AI experiment validating a hybrid LLM evaluator against controlled correct, incorrect, contradictory, and paraphrased responses.">
+    <meta name="author" content="Arulnidhi Karunanidhi">
+    <meta property="og:title" content="Evaluating the Evaluator, Part II: Testing a Hybrid Scorer">
+    <meta property="og:description" content="A small Inspect AI experiment validating a hybrid LLM evaluator against controlled correct, incorrect, contradictory, and paraphrased responses.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://arulnidhii.github.io/posts/testing-a-hybrid-scorer/">
+    <meta property="article:author" content="Arulnidhi Karunanidhi">
+    <meta property="article:published_time" content="2026-09-21">
+    <link rel="canonical" href="https://arulnidhii.github.io/posts/testing-a-hybrid-scorer/">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site summary">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Evaluating the Evaluator, Part II: Testing a Hybrid Scorer",
+        "description": "A small Inspect AI experiment validating a hybrid LLM evaluator against controlled correct, incorrect, contradictory, and paraphrased responses.",
+        "author": {"@type": "Person", "name": "Arulnidhi Karunanidhi", "url": "https://arulnidhii.github.io"},
+        "datePublished": "2026-09-21",
+        "url": "https://arulnidhii.github.io/posts/testing-a-hybrid-scorer/",
+        "keywords": ["evaluation methodology", "LLM evaluations", "scorer validation"]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=JetBrains+Mono:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="article-page">
+<header>
+    <div class="site-identity"><div class="avatar">AK</div><div class="site-name"><a href="/">Arulnidhi Karunanidhi</a></div></div>
+    <p class="site-tagline">Research Engineer — AI Evaluations &amp; Agentic Safety</p>
+    <nav aria-label="Primary navigation"><a href="/#research">Research</a><a href="/publications/">Publications</a><a href="/#writing" aria-current="page">Writing</a><a href="/#projects">Projects</a><a href="/about.html">About</a><a href="https://github.com/arulnidhii" target="_blank" rel="noopener">GitHub</a><a href="https://linkedin.com/in/arulnidhikarunanidhi" target="_blank" rel="noopener">LinkedIn</a></nav>
+</header>
+<article>
+    <div class="post-header">
+        <div class="post-meta"><span class="post-date">September 21, 2026</span><span class="post-tag">evaluation methodology</span><span class="reading-time">6 min read</span></div>
+        <h1>Evaluating the Evaluator, Part II: Testing a Hybrid Scorer</h1>
+        <p class="subtitle">A controlled test of whether structural checks plus semantic grading could fix one lexical scorer without hiding new evaluator failures.</p>
+    </div>
+    <div class="prose">
+        <div class="callout"><p><strong>Scope:</strong> These are results from eight hand-designed cases, not a benchmark of a model, Inspect AI, or model graders in general. An observed 1.00 here does not establish general reliability.</p></div>
+
+        <p><a href="/posts/evaluating-the-evaluator/">The previous experiment</a> exposed a specific measurement problem: a lexical scorer rejected semantically correct answers when they omitted an expected phrase. The follow-up question was narrow: can a hybrid scorer reduce those false negatives without becoming too permissive?</p>
+
+        <h2>Eval 03 v2: replacing one kind of judgment</h2>
+        <p>I separated the decision into a deterministic structural gate and a semantic factual grade:</p>
+        <pre><code>MODEL RESPONSE
+      |
+deterministic structural check
+(required `VERDICT: FALSE`)
+      |
+semantic factual grader
+      |
+final score</code></pre>
+        <p>The principle was to use deterministic checks for requirements that really are deterministic—format, schema, and required fields—and semantic grading where correctness depends on meaning.</p>
+        <p>On the same five-sample run, <code>brittle_scorer</code> accuracy was <strong>0.80</strong> and <code>hybrid_scorer</code> accuracy was <strong>1.00</strong>. The brittle scorer's remaining error was a false negative caused by wording: the response to the “humans use only 10% of their brains” claim conveyed the correct correction but did not contain the literal phrase “10% myth.”</p>
+        <p>That result supported only one conclusion: <strong>the hybrid scorer fixed the observed false-negative failure.</strong> It did not show that the scorer was reliable. To investigate that, I needed to make the evaluator—not another model generation—the system under test.</p>
+
+        <h2>Eval 03 v3: fixed responses, known labels</h2>
+        <p>I constructed eight candidate responses and assigned human gold labels before scoring them. Fixing the responses removed model generation as a confound:</p>
+        <pre><code>KNOWN RESPONSE QUALITY
+        |
+      SCORER
+        |
+ PREDICTED QUALITY
+        |
+COMPARE WITH HUMAN GOLD LABEL</code></pre>
+        <p>Treating “response is correct” as the positive class made scorer behavior visible as true positives, true negatives, false positives, and false negatives. Once the scorer became the system under test, false positives and false negatives became evaluator failures rather than model failures.</p>
+        <p>The cases covered:</p>
+        <ol>
+            <li>a clean correct answer;</li>
+            <li>a semantically correct paraphrase;</li>
+            <li>a verbose but factually correct answer;</li>
+            <li>another straightforward correct answer;</li>
+            <li>correct format with the wrong factual correction;</li>
+            <li>an expected keyword inside a contradictory answer;</li>
+            <li>a correct rejection followed by a new false factual claim; and</li>
+            <li>a factually correct answer that violated the required response structure.</li>
+        </ol>
+
+        <h2>Observed results</h2>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Scorer validation results; scroll horizontally on narrow screens">
+            <table>
+                <caption>Eight-case scorer validation</caption>
+                <thead><tr><th>Measure</th><th>Brittle</th><th>Hybrid</th></tr></thead>
+                <tbody>
+                    <tr><td>Scorer accuracy</td><td>0.50</td><td>1.00</td></tr>
+                    <tr><td>TP</td><td>2</td><td>4</td></tr>
+                    <tr><td>TN</td><td>2</td><td>4</td></tr>
+                    <tr><td>FP</td><td>2</td><td>0</td></tr>
+                    <tr><td>FN</td><td>2</td><td>0</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>The brittle validator produced two errors in each direction. The hybrid validator agreed with all eight manually assigned labels. These figures describe an intentionally tiny, hand-constructed validation set; they are not estimates of performance on a broader response distribution.</p>
+
+        <h2>The adversarial cases that mattered</h2>
+        <h3>Keyword contradiction</h3>
+        <p>One candidate included both the expected word “Canberra” and the required <code>VERDICT: FALSE</code>, then claimed that Sydney was actually Australia's capital. The lexical scorer accepted it because its surface conditions were satisfied. The semantic component rejected it. Keyword presence is not semantic correctness.</p>
+
+        <h3>A correct rejection with a new falsehood</h3>
+        <p>Another candidate correctly rejected the 10% brain myth, then claimed that humans actually use about 20% of the brain. The brittle scorer accepted the required surface phrase. The semantic grader rejected the material factual error introduced by the correction.</p>
+        <p>This was the most informative case: the answer contained part of the target fact and was still wrong overall. It tested whether the scorer could assess a response rather than merely locate evidence that looked favorable.</p>
+
+        <h2>Structural gating</h2>
+        <p>The missing-format case was factually correct but omitted the explicitly required <code>VERDICT: FALSE</code>. The structural gate rejected it before semantic grading. For this task, that was desirable: there was no reason to spend an LLM judgment on a requirement that a deterministic check could settle.</p>
+        <pre><code>response
+   |
+deterministic checks
+(format/schema/required fields)
+   |
+semantic judgment
+(meaning/factuality/contradiction)
+   |
+score</code></pre>
+        <p>This is not a universal evaluator design. It was the architecture that matched this task's separable requirements.</p>
+
+        <h2>What changed in the question</h2>
+        <p>A model evaluation score is produced by a measurement system. The scorer can therefore be tested, validated, attacked, and characterised. The useful question shifted from “How do I write a scorer?” to “What evidence do I have that this scorer is a valid measurement instrument?”</p>
+        <p>Here, the evidence was a small confusion matrix and case-level inspection. It was enough to reveal the lexical scorer's symmetric false-positive and false-negative problem, and to show that the hybrid design handled these particular cases. It was not enough to establish reliability outside them.</p>
+
+        <h2>Limitations</h2>
+        <ul>
+            <li>The validation set contained only eight hand-designed cases.</li>
+            <li>The human gold labels were manually defined rather than independently adjudicated.</li>
+            <li>Only one semantic grader configuration was tested.</li>
+            <li>Model grading can itself be inconsistent or biased.</li>
+            <li>An observed 1.00 on eight cases does not establish general reliability.</li>
+            <li>No broad model-capability claim follows from this scorer test.</li>
+        </ul>
+        <p>A stronger study would use a larger, independently labelled set; broader adversarial coverage; repeated grader runs; disagreement analysis; and potentially multiple graders and human raters. For now, the result is narrower: the hybrid scorer fixed the original false negative and survived the controlled failures I designed for it.</p>
+    </div>
+    <a href="/" class="back-link">← Back to all posts</a>
+</article>
+<footer>&copy; 2026 Arulnidhi Karunanidhi &middot; Built with plain HTML &middot; Hosted on GitHub Pages</footer>
+</body>
+</html>
